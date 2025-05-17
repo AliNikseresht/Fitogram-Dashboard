@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const supabase = createClientComponentClient();
@@ -50,7 +51,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center text-black px-4">
       <form
         onSubmit={handleRegister}
-        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm"
+        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
       >
         <h2 className="font-bold text-lg md:text-3xl py-3 bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center">
           Register
@@ -123,6 +124,17 @@ export default function RegisterPage() {
         >
           {loading ? "Loading..." : "Register"}
         </button>
+        <div className="flex items-center gap-2 mt-3 w-full justify-between">
+          <p className="text-xs">
+            If you have an account, please login.
+          </p>
+          <Link
+            href="/login"
+            className="text-xs border px-4 py-1 rounded-full border-[#bababa]"
+          >
+            Log In
+          </Link>
+        </div>
       </form>
     </div>
   );
