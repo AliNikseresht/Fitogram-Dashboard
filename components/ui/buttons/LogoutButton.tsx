@@ -24,7 +24,7 @@ export default function LogoutButton() {
 
     setTimeout(() => {
       router.push("/login");
-    }, 2000);
+    }, 1200);
   };
 
   return (
