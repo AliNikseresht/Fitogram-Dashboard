@@ -4,7 +4,7 @@ import React from "react";
 const UsersPage = () => {
   return (
     <div>
-      UsersPage
+      UsersPage:
       <LogoutButton />
     </div>
   );
