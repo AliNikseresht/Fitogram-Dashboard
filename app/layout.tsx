@@ -32,6 +32,36 @@ export const metadata: Metadata = {
   authors: [
     { name: "Ali Nikseresht", url: "https://fitogram-dashboard.vercel.app/" },
   ],
+  viewport: "width=device-width, initial-scale=1",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "Fitogram Dashboard | Fitness Journeys App",
+    description:
+      "Achieve your fitness goals with Fitogram. Personalized plans, expert guidance, and motivation to stay on track.",
+    url: "https://fitogram-dashboard.vercel.app/",
+    siteName: "Fitogram Dashboard",
+    images: [
+      {
+        url: "https://fitogram-dashboard.vercel.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Fitogram Dashboard",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fitogram Dashboard | Fitness Journeys App",
+    description:
+      "Achieve your fitness goals with Fitogram. Personalized plans, expert guidance, and motivation to stay on track.",
+    images: ["https://fitogram-dashboard.vercel.app/og-image.png"],
+    creator: "@AliNikseresht",
+  },
+  metadataBase: new URL("https://fitogram-dashboard.vercel.app"),
 };
 
 export default function RootLayout({
