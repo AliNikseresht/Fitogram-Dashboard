@@ -1,4 +1,4 @@
-import LogoutButton from "@/components/ui/buttons/LogoutButton";
+import LogoutButton from "@/components/ui/Buttons/LogoutButton";
 import React from "react";
 
 const UsersPage = () => {

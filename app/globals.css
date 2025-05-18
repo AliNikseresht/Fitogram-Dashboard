@@ -15,8 +15,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #f3f8fd;
+    --foreground: #212121;
   }
 }
 
@@ -24,4 +24,27 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.c-blue,
+.bc-blue {
+  color: #2962eb;
+}
+
+.bg-bc-blue {
+  background-color: #2962eb;
+}
+
+.hover\:c-blue:hover {
+  color: #2962eb;
+}
+
+.hover\:bg-bc-blue:hover {
+  background-color: #1748b9;
+}
+
+@layer components {
+  h1 {
+    @apply font-bold text-lg md:text-3xl py-3 lg:text-5xl bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center;
+  }
 }
