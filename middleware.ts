@@ -1,6 +1,5 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
@@ -10,59 +9,48 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const pathname = req.nextUrl.pathname;
+  const { pathname } = req.nextUrl;
 
-  const isAuthPage = pathname === "/login" || pathname === "/register";
-  const isDashboardRoot = pathname === "/dashboard";
-  const isProtectedDashboard = pathname.startsWith("/dashboard");
-  const isHomePage = pathname === "/";
+  const publicRoutes = ["/login", "/register", "/profile"];
 
-  if (!session && (isProtectedDashboard || isHomePage)) {
+  if (publicRoutes.includes(pathname)) {
+    return res;
+  }
+
+  if (!session || Date.now() >= (session.expires_at || 0) * 1000) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (session && isAuthPage) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("user_id")
+    .eq("user_id", session.user.id)
+    .single();
 
-    const targetPath =
-      profile?.role === "coach" ? "/dashboard/coaches" : "/dashboard/users";
-
-    return NextResponse.redirect(new URL(targetPath, req.url));
+  if (!profile && pathname !== "/profile") {
+    return NextResponse.redirect(new URL("/profile", req.url));
   }
 
-  if (session && isDashboardRoot) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
+  const userRole = session.user.user_metadata?.role;
 
-    const targetPath =
-      profile?.role === "coach" ? "/dashboard/coaches" : "/dashboard/users";
-
-    return NextResponse.redirect(new URL(targetPath, req.url));
+  if (pathname.startsWith("/dashboard/users") && userRole !== "user") {
+    return NextResponse.redirect(new URL("/dashboard/coaches", req.url));
   }
 
-  if (session && isHomePage) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
-
-    const targetPath =
-      profile?.role === "coach" ? "/dashboard/coaches" : "/dashboard/users";
-
-    return NextResponse.redirect(new URL(targetPath, req.url));
+  if (pathname.startsWith("/dashboard/coaches") && userRole !== "coach") {
+    return NextResponse.redirect(new URL("/dashboard/users", req.url));
   }
 
   return res;
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/dashboard", "/login", "/register"],
+  matcher: [
+    "/",
+    "/dashboard/:path*",
+    "/dashboard",
+    "/login",
+    "/register",
+    "/profile",
+  ],
 };

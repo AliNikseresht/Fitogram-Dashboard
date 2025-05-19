@@ -43,7 +43,7 @@ const LoginForm = () => {
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("role")
+      .select("*")
       .eq("id", userId)
       .maybeSingle();
 
@@ -56,6 +56,9 @@ const LoginForm = () => {
           id: userId,
           full_name: fullName,
           role: role,
+          height: null,
+          weight: null,
+          goal: null,
         },
       ]);
 
