@@ -69,7 +69,7 @@ const UsersPage = () => {
     }
 
     fetchProfile();
-  }, []);
+  }, [supabase]);
 
   if (!profile) return <div>Loading...</div>;
 
