@@ -11,23 +11,24 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  const publicRoutes = ["/login", "/register", "/profile"];
+  const publicRoutes = ["/login", "/register", "/profile", "/verify-email"];
 
-  if (publicRoutes.includes(pathname)) {
-    return res;
-  }
+  if (publicRoutes.includes(pathname)) return res;
 
   if (!session || Date.now() >= (session.expires_at || 0) * 1000) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
     .from("profiles")
-    .select("user_id")
-    .eq("user_id", session.user.id)
+    .select("height, weight, goal")
+    .eq("id", session.user.id)
     .single();
 
-  if (!profile && pathname !== "/profile") {
+  const isProfileIncomplete =
+    !profile || !profile.height || !profile.weight || !profile.goal;
+
+  if (isProfileIncomplete && pathname !== "/profile") {
     return NextResponse.redirect(new URL("/profile", req.url));
   }
 
@@ -52,5 +53,6 @@ export const config = {
     "/login",
     "/register",
     "/profile",
+    "/verify-email",
   ],
 };

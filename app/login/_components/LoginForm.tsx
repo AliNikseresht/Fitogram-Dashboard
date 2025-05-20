@@ -75,7 +75,7 @@ const LoginForm = () => {
         router.push(
           role === "coach" ? "/dashboard/coaches" : "/dashboard/users"
         );
-      }, 1500);
+      }, 1200);
     } else {
       toast.success("Logged in successfully!");
       setLoading(false);
@@ -84,7 +84,7 @@ const LoginForm = () => {
         router.push(
           profile.role === "coach" ? "/dashboard/coaches" : "/dashboard/users"
         );
-      }, 1500);
+      }, 1200);
     }
   };
 
