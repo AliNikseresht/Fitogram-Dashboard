@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import LogoutButton from "@/components/ui/buttons/LogoutButton";
-import Image from "next/image";
 
 interface UserProfile {
   id: string;
