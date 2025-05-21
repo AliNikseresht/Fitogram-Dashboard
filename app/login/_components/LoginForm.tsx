@@ -23,75 +23,73 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (formData: LoginFormData) => {
+  const onSubmit = handleSubmit(async (formData: LoginFormData) => {
+    if (loading) return;
+
     setLoading(true);
 
-    const { data: loginData, error: loginError } =
-      await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
+    try {
+      const { data: loginData, error: loginError } =
+        await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
 
-    if (loginError || !loginData.user) {
-      toast.error(loginError?.message || "Login failed.");
-      setLoading(false);
-      return;
-    }
-
-    const user = loginData.user;
-    const userId = user.id;
-
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .maybeSingle();
-
-    if (!profile || profileError) {
-      const role = user.user_metadata?.role || "user";
-      const fullName = user.user_metadata?.full_name || "Unnamed";
-
-      const { error: insertError } = await supabase.from("profiles").insert([
-        {
-          id: userId,
-          full_name: fullName,
-          role: role,
-          height: null,
-          weight: null,
-          goal: null,
-        },
-      ]);
-
-      if (insertError) {
-        toast.error("Failed to insert profile");
-        setLoading(false);
+      if (loginError || !loginData.user) {
+        toast.error(loginError?.message || "Login failed.");
         return;
       }
 
-      toast.success("Logged in successfully!");
-      setLoading(false);
+      const user = loginData.user;
+      const userId = user.id;
 
-      setTimeout(() => {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (!profile || profileError) {
+        const role = user.user_metadata?.role || "user";
+        const fullName = user.user_metadata?.full_name || "Unnamed";
+
+        const { error: insertError } = await supabase.from("profiles").insert([
+          {
+            id: userId,
+            full_name: fullName,
+            role: role,
+            height: null,
+            weight: null,
+            goal: null,
+          },
+        ]);
+
+        if (insertError) {
+          toast.error("Failed to insert profile");
+          return;
+        }
+
+        toast.success("Logged in successfully!");
         router.push(
           role === "coach" ? "/dashboard/coaches" : "/dashboard/users"
         );
-      }, 1200);
-    } else {
-      toast.success("Logged in successfully!");
-      setLoading(false);
-
-      setTimeout(() => {
+      } else {
+        toast.success("Logged in successfully!");
         router.push(
           profile.role === "coach" ? "/dashboard/coaches" : "/dashboard/users"
         );
-      }, 1200);
+      }
+    } catch {
+      toast.error("Unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
-  };
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center text-black px-4">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
         className="bg-white p-5 rounded-lg shadow-lg w-full max-w-md"
       >
         <h2 className="font-bold text-3xl py-3 bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center">

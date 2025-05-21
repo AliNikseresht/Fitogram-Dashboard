@@ -17,6 +17,7 @@ interface UserProfile {
 const UsersPage = () => {
   const supabase = createClientComponentClient();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -49,7 +50,7 @@ const UsersPage = () => {
           height: null,
           weight: null,
           goal: null,
-          avatar_url: null,
+          avatar_url: user.user_metadata.avatar_url || null,
         });
 
         if (insertError) {
@@ -68,6 +69,13 @@ const UsersPage = () => {
         });
       } else {
         setProfile(profileData);
+
+        if (profileData.avatar_url) {
+          const { data } = supabase.storage
+            .from("avatars")
+            .getPublicUrl(profileData.avatar_url);
+          setAvatarUrl(data.publicUrl);
+        }
       }
     }
 
@@ -85,9 +93,9 @@ const UsersPage = () => {
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-tr from-indigo-100 via-white to-purple-100 p-6">
       <div className="bg-white shadow-lg rounded-xl max-w-md w-full p-8 flex flex-col items-center gap-6">
         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-500 shadow-md">
-          {profile.avatar_url ? (
+          {avatarUrl ? (
             <img
-              src={profile.avatar_url}
+              src={avatarUrl}
               alt={`${profile.full_name} avatar`}
               className="w-full h-full object-cover"
             />
