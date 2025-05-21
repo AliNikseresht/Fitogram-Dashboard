@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
+import CustomLoadingSpinner from "@/components/ui/CustomLoadingSpinner";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -169,7 +170,7 @@ const ProfilePage = () => {
           disabled={loading}
           className="w-full bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-white py-2 rounded-full"
         >
-          {loading ? "Saving..." : "Save Profile"}
+          {loading ? <CustomLoadingSpinner /> : "Save Profile"}
         </button>
       </div>
     </div>

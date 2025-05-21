@@ -9,6 +9,7 @@ import InputField from "@/components/ui/Forms/InputField";
 import { inputFields } from "@/data/RegisterFormItemsData";
 import { FormData, schema } from "@/schemas/registerSchema";
 import Link from "next/link";
+import CustomLoadingSpinner from "@/components/ui/CustomLoadingSpinner";
 
 const RegisterForm = () => {
   const supabase = createClientComponentClient();
@@ -93,7 +94,7 @@ const RegisterForm = () => {
           className="bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-white w-full rounded-full py-2"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Registering..." : "Register"}
+          {isSubmitting ? <CustomLoadingSpinner /> : "Register"}
         </button>
 
         <div className="flex items-center gap-2 mt-3 justify-between text-sm">

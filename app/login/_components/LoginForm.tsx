@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { LoginFormData, loginSchema } from "@/schemas/loginSchema";
+import CustomLoadingSpinner from "@/components/ui/CustomLoadingSpinner";
 
 const LoginForm = () => {
   const supabase = createClientComponentClient();
@@ -124,7 +125,7 @@ const LoginForm = () => {
           className="bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-white w-full rounded-full py-2"
           disabled={loading}
         >
-          {loading ? "Loading..." : "Login"}
+          {loading ? <CustomLoadingSpinner /> : "Login"}
         </button>
 
         <div className="flex items-center gap-2 mt-3 w-full justify-between">

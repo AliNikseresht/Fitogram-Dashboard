@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import CustomLoadingSpinner from "../CustomLoadingSpinner";
 
 export default function LogoutButton() {
   const supabase = createClientComponentClient();
@@ -24,19 +25,19 @@ export default function LogoutButton() {
 
     setTimeout(() => {
       router.push("/login");
-    }, 1200);
+    }, 800);
   };
 
   return (
     <>
       <button
         onClick={handleLogout}
-        className={`text-red-500 hover:underline ${
+        className={`bg-red-500 text-[#fff] hover:underline w-32 rounded-md cursor-pointer py-1.5 ${
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={loading}
       >
-        {loading ? "Logging out..." : "Logout"}
+        {loading ? <CustomLoadingSpinner /> : "Logout"}
       </button>
     </>
   );
