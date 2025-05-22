@@ -45,6 +45,6 @@ body {
 
 @layer components {
   h1 {
-    @apply font-bold text-lg md:text-3xl py-3 lg:text-5xl bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center;
+    @apply font-bold text-lg md:text-3xl lg:text-5xl bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center;
   }
 }

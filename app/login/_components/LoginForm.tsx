@@ -88,10 +88,10 @@ const LoginForm = () => {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-black px-4">
+    <div className="min-h-screen flex items-center justify-center text-black px-3 w-full">
       <form
         onSubmit={onSubmit}
-        className="bg-white p-5 rounded-lg shadow-lg w-full max-w-md"
+        className="bg-[#fff] p-3 lg:p-5 rounded-lg shadow-lg w-full max-w-md"
       >
         <h2 className="font-bold text-3xl py-3 bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center">
           Login
@@ -122,19 +122,19 @@ const LoginForm = () => {
 
         <button
           type="submit"
-          className="bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-white w-full rounded-full py-2"
+          className="bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-[#fff] w-full rounded-full py-2 cursor-pointer"
           disabled={loading}
         >
           {loading ? <CustomLoadingSpinner /> : "Login"}
         </button>
 
-        <div className="flex items-center gap-2 mt-3 w-full justify-between">
-          <p className="text-xs">
+        <div className="flex items-center mt-3 w-full justify-between">
+          <p className="text-[10px] lg:text-xs">
             If you don`t have an account, please register.
           </p>
           <Link
             href="/register"
-            className="text-xs border px-4 py-1 rounded-full border-[#bababa]"
+            className="text-[10px] lg:text-sm border px-3 py-1 rounded-full border-[#bababa]"
           >
             Sign Up
           </Link>

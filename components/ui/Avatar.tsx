@@ -12,8 +12,8 @@ export const Avatar = ({
   borderWidth = 4,
 }: AvatarProps) => (
   <div
-    className={`w-${size} h-${size} rounded-full overflow-hidden border-indigo-500 shadow-md`}
-    style={{ width: size, height: size, borderWidth: borderWidth }}
+    className="rounded-full overflow-hidden border-white shadow-md"
+    style={{ width: size, height: size, borderWidth, borderStyle: "solid" }}
   >
     {avatarUrl ? (
       <img

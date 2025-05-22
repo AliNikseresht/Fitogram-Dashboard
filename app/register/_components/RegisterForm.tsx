@@ -52,10 +52,10 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 text-black">
+    <div className="min-h-screen flex items-center justify-center text-black px-3 w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-[#fff] p-8 rounded-lg shadow-lg w-full max-w-md"
+        className="bg-[#fff] p-3 lg:p-5 rounded-lg shadow-lg w-full max-w-md"
       >
         <h2 className="font-bold text-3xl py-3 bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center">
           Register
@@ -73,19 +73,19 @@ const RegisterForm = () => {
         ))}
 
         <div className="mb-6">
-          <label className="block mb-1 text-sm font-medium">Role</label>
+          <label className="block mb-1 text-xs lg:text-sm font-medium">Role</label>
           <select
             {...register("role")}
-            className={`w-full border ${
+            className={`w-full border text-xs lg:text-sm ${
               errors.role ? "border-red-500" : "border-gray-300"
             } rounded px-3 py-2`}
             disabled={isSubmitting}
           >
-            <option value="user">User</option>
-            <option value="coach">Coach</option>
+            <option value="user" className="text-xs lg:text-sm">User</option>
+            <option value="coach" className="text-xs lg:text-sm">Coach</option>
           </select>
           {errors.role && (
-            <p className="text-red-500 text-xs mt-1">{errors.role.message}</p>
+            <p className="text-red-500 text-xs lg:text-sm mt-1">{errors.role.message}</p>
           )}
         </div>
 
@@ -98,10 +98,12 @@ const RegisterForm = () => {
         </button>
 
         <div className="flex items-center gap-2 mt-3 justify-between text-sm">
-          <p>If you have an account, please login.</p>
+          <p className="text-[10px] lg:text-xs">
+            If you have an account, please login.
+          </p>
           <Link
             href="/login"
-            className="border px-4 py-1 rounded-full border-[#bababa]"
+            className="text-[10px] lg:text-sm border px-3 py-1 rounded-full border-[#bababa]"
           >
             Log In
           </Link>
