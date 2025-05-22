@@ -2,12 +2,18 @@ interface AvatarProps {
   fullName: string;
   avatarUrl: string | null;
   size?: number;
+  borderWidth?: number;
 }
 
-export const Avatar = ({ fullName, avatarUrl, size = 80 }: AvatarProps) => (
+export const Avatar = ({
+  fullName,
+  avatarUrl,
+  size = 80,
+  borderWidth = 4,
+}: AvatarProps) => (
   <div
-    className={`w-${size} h-${size} rounded-full overflow-hidden border-4 border-indigo-500 shadow-md`}
-    style={{ width: size, height: size }}
+    className={`w-${size} h-${size} rounded-full overflow-hidden border-indigo-500 shadow-md`}
+    style={{ width: size, height: size, borderWidth: borderWidth }}
   >
     {avatarUrl ? (
       <img

@@ -20,15 +20,19 @@ export function useUserProfile() {
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
+
     const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-    if (userError || !user) {
-      console.error("User not found", userError);
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session?.user) {
+      console.error("Session not found", sessionError);
       setLoading(false);
       return;
     }
+
+    const user = session.user;
 
     const { data: profileData, error } = await supabase
       .from("profiles")

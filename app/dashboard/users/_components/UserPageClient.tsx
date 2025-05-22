@@ -19,7 +19,25 @@ const UsersPageClient = () => {
     );
 
   return (
-    <div className="min-h-screen flex flex-col p-6 justify-between">
+    <div className="min-h-screen flex flex-col p-6 gap-6 w-full">
+      <div className="flex justify-between">
+        <div>
+          <h3 className="text-2xl font-bold">Dashboard</h3>
+          <p className="text-gray-600">Monday, May 22, 2025</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Avatar
+            fullName={profile.full_name}
+            avatarUrl={avatarUrl}
+            size={45}
+            borderWidth={2}
+          />
+          <div className="flex flex-col justify-center">
+            <h2 className="text-xl text-indigo-700">{profile.full_name}</h2>
+            <p className="text-xs text-gray-600">Premium Member</p>
+          </div>
+        </div>
+      </div>
       <div className="bg-[#fff] shadow-lg rounded-xl w-full p-5 flex flex-col md:flex-row md:justify-between items-center gap-6">
         <div className="w-full flex items-center gap-4">
           <Avatar
