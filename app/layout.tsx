@@ -75,8 +75,8 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#317EFB" />
-        <link rel="icon" href="/icons/icon-192x192.png" />
-        <link rel="apple-touch-icon" href="/icons/icon-512x512.png" />
+        <link rel="icon" href="/icons/app-logo.png" />
+        <link rel="apple-touch-icon" href="/icons/app-logo.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
