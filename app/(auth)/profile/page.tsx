@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
-import CustomLoadingSpinner from "@/components/ui/CustomLoadingSpinner";
+import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
 
 const ProfilePage = () => {
   const router = useRouter();

@@ -1,6 +1,6 @@
 "use client";
 
-import CustomLoadingBars from "@/components/ui/CustomLoadingBars";
+import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { UserHeader } from "./UserHeader";
 import { Avatar } from "@/components/ui/Avatar";

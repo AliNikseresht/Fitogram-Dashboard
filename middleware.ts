@@ -42,6 +42,20 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard/users", req.url));
   }
 
+  if (pathname === "/") {
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+
+    if (userRole === "user") {
+      return NextResponse.redirect(new URL("/dashboard/users", req.url));
+    } else if (userRole === "coach") {
+      return NextResponse.redirect(new URL("/dashboard/coaches", req.url));
+    } else {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+  }
+
   return res;
 }
 

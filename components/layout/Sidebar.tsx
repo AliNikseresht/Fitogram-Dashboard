@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import CustomLoadingBars from "@/components/ui/CustomLoadingBars";
+import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 
 const Sidebar = () => {
   const pathname = usePathname();
