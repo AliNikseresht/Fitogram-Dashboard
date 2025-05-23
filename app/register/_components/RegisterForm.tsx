@@ -9,7 +9,7 @@ import InputField from "@/components/ui/Forms/InputField";
 import { inputFields } from "@/data/RegisterFormItemsData";
 import { FormData, schema } from "@/schemas/registerSchema";
 import Link from "next/link";
-import CustomLoadingSpinner from "@/components/ui/CustomLoadingSpinner";
+import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
 
 const RegisterForm = () => {
   const supabase = createClientComponentClient();

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { LoginFormData, loginSchema } from "@/schemas/loginSchema";
-import CustomLoadingSpinner from "@/components/ui/CustomLoadingSpinner";
+import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
 
 const LoginForm = () => {
   const supabase = createClientComponentClient();
