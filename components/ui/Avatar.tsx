@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface AvatarProps {
   fullName: string;
   avatarUrl: string | null;
@@ -16,10 +18,13 @@ export const Avatar = ({
     style={{ width: size, height: size, borderWidth, borderStyle: "solid" }}
   >
     {avatarUrl ? (
-      <img
+      <Image
         src={avatarUrl}
         alt={`${fullName} avatar`}
         className="w-full h-full object-cover"
+        priority
+        width={500}
+        height={500}
       />
     ) : (
       <div className="flex justify-center items-center w-full h-full bg-indigo-200 text-indigo-600 font-bold text-4xl">
