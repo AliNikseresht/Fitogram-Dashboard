@@ -8,6 +8,12 @@ import { UserStats } from "./UserStats";
 import LogoutButton from "@/components/ui/buttons/LogoutButton";
 import { UserSummaryCards } from "./UserSummaryCards";
 import { UserGoalProgress } from "./UserGoalProgress";
+import { TodayWorkoutPlan } from "./TodayWorkoutPlan";
+import { TodayDietPlan } from "./TodayDietPlan";
+import { ProgressCharts } from "./charts/ProgressCharts";
+import { UserAchievements } from "./UserAchievements";
+import { QuickActions } from "./QuickActions";
+import { UserReminders } from "./UserReminders";
 
 const UsersPageClient = () => {
   const { profile, avatarUrl, loading } = useUserProfile();
@@ -22,14 +28,14 @@ const UsersPageClient = () => {
     );
 
   return (
-    <div className="min-h-screen flex flex-col p-3 lg:p-6 gap-6 w-full overflow-y-auto">
+    <div className="min-h-screen flex flex-col p-3 lg:p-6 gap-6 w-full">
       <UserHeader
         fullName={profile.full_name}
         role={profile.role}
         avatarUrl={avatarUrl}
       />
 
-      <div className="flex flex-col rounded-xl shadow-xl">
+      <div className="flex flex-col rounded-xl shadow-xl overflow-y-auto">
         <div className="bg-gradient-to-r rounded-t-2xl from-[#0583c7] to-[#9f1daf] w-full p-2.5 lg:p-5 flex flex-col lg:flex-row lg:justify-between items-center gap-6">
           <div className="w-full flex lg:items-center gap-4">
             <Avatar
@@ -41,7 +47,9 @@ const UsersPageClient = () => {
               <h1 className="lg:text-3xl font-bold text-white text-start">
                 hey, {profile.full_name}
               </h1>
-              <p className="text-xs lg:text-base text-white">Weight Loss Program • Week 6</p>
+              <p className="text-xs lg:text-base text-white">
+                Weight Loss Program • Week 6
+              </p>
             </div>
           </div>
 
@@ -56,6 +64,16 @@ const UsersPageClient = () => {
 
         <UserSummaryCards />
       </div>
+      <div className="flex w-full justify-between">
+        <TodayWorkoutPlan />
+        <TodayDietPlan />
+        <UserAchievements />
+      </div>
+      <div className="flex w-full justify-between">
+        <UserReminders />
+        <QuickActions />
+      </div>
+      <ProgressCharts />
 
       <LogoutButton />
     </div>
