@@ -21,14 +21,14 @@ const data = [
 
 export function ProgressCharts() {
   return (
-    <section className="bg-gradient-to-r from-green-400 to-blue-500 rounded-xl shadow-xl p-6 w-full mx-auto my-8">
-      <h2 className="text-white font-extrabold text-3xl mb-5 drop-shadow-lg">
+    <section className="bg-gradient-to-r from-green-400 to-blue-500 rounded-xl shadow-xl p-3 md:p-6 w-full mx-auto my-8">
+      <h2 className="text-[#fff] font-extrabold md:text-3xl mb-5 drop-shadow-lg">
         Weekly Progress Tracker 📈
       </h2>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart
           data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
           <XAxis dataKey="day" stroke="white" />
@@ -63,7 +63,7 @@ export function ProgressCharts() {
           />
         </LineChart>
       </ResponsiveContainer>
-      <p className="text-white mt-4 font-semibold text-right italic drop-shadow-md">
+      <p className="text-[#fff] text-xs mt-4 font-semibold lg:text-right drop-shadow-md">
         Track your weight, calories burned, and steps walked over the past week!
       </p>
     </section>

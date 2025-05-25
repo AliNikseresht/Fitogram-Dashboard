@@ -64,12 +64,12 @@ const UsersPageClient = () => {
 
         <UserSummaryCards />
       </div>
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between flex-col lg:flex-row">
         <TodayWorkoutPlan />
         <TodayDietPlan />
         <UserAchievements />
       </div>
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between flex-col lg:flex-row">
         <UserReminders />
         <QuickActions />
       </div>
