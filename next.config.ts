@@ -4,6 +4,9 @@ import type { NextConfig } from "next";
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
+  images: {
+    domains: ["btrohbxtyfzgeioyonez.supabase.co"],
+  },
   reactStrictMode: true,
   swcMinify: true,
   experimental: {

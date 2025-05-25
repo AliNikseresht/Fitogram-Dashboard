@@ -1,5 +1,6 @@
 "use client";
 
+import Sidebar from "./Sidebar";
 import SupabaseProvider from "./SupabaseProvider";
 
 export default function ClientLayout({
@@ -7,5 +8,12 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <SupabaseProvider>{children}</SupabaseProvider>;
+  return (
+    <SupabaseProvider>
+      <main className="flex flex-col lg:flex-row w-full h-screen">
+        <Sidebar />
+        <div className="w-full overflow-auto">{children}</div>
+      </main>
+    </SupabaseProvider>
+  );
 }

@@ -5,7 +5,6 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { UserHeader } from "./UserHeader";
 import { Avatar } from "@/components/ui/Avatar";
 import { UserStats } from "./UserStats";
-import LogoutButton from "@/components/ui/buttons/LogoutButton";
 import { UserSummaryCards } from "./UserSummaryCards";
 import { UserGoalProgress } from "./UserGoalProgress";
 import { TodayWorkoutPlan } from "./TodayWorkoutPlan";
@@ -64,18 +63,16 @@ const UsersPageClient = () => {
 
         <UserSummaryCards />
       </div>
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between flex-col lg:flex-row">
         <TodayWorkoutPlan />
         <TodayDietPlan />
         <UserAchievements />
       </div>
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between flex-col lg:flex-row">
         <UserReminders />
         <QuickActions />
       </div>
       <ProgressCharts />
-
-      <LogoutButton />
     </div>
   );
 };

@@ -28,7 +28,7 @@ const actions = [
 
 export function QuickActions() {
   return (
-    <section className="max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
+    <section className="max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-6 items-center mt-4 lg:mt-0">
       {actions.map(({ label, icon, href }, idx) => (
         <Link
           key={idx}
@@ -37,7 +37,7 @@ export function QuickActions() {
           aria-label={label}
         >
           <div className="mb-2">{icon}</div>
-          <span className="font-semibold text-lg">{label}</span>
+          <span className="font-semibold text-xs lg:text-lg">{label}</span>
         </Link>
       ))}
     </section>
