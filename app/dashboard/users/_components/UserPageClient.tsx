@@ -5,7 +5,6 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { UserHeader } from "./UserHeader";
 import { Avatar } from "@/components/ui/Avatar";
 import { UserStats } from "./UserStats";
-import LogoutButton from "@/components/ui/buttons/LogoutButton";
 import { UserSummaryCards } from "./UserSummaryCards";
 import { UserGoalProgress } from "./UserGoalProgress";
 import { TodayWorkoutPlan } from "./TodayWorkoutPlan";
@@ -74,8 +73,6 @@ const UsersPageClient = () => {
         <QuickActions />
       </div>
       <ProgressCharts />
-
-      <LogoutButton />
     </div>
   );
 };

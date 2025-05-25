@@ -4,7 +4,6 @@ import "./globals.css";
 import ClientLayout from "@/components/layout/ClientLayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from "@/components/layout/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,10 +81,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ClientLayout>
-          <main className="flex w-full justify-center">
-            <Sidebar />
-            {children}
-          </main>
+          {children}
         </ClientLayout>
         <ToastContainer />
       </body>
