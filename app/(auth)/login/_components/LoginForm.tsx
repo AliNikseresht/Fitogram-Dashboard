@@ -75,6 +75,12 @@ const LoginForm = () => {
           role === "coach" ? "/dashboard/coaches" : "/dashboard/users"
         );
       } else {
+        // update last_login
+        await supabase
+          .from("profiles")
+          .update({ last_login: new Date().toISOString() })
+          .eq("id", userId);
+
         toast.success("Logged in successfully!");
         router.push(
           profile.role === "coach" ? "/dashboard/coaches" : "/dashboard/users"

@@ -23,7 +23,7 @@ const Sidebar = () => {
   if (!shouldRenderSidebar) return null;
 
   return (
-    <div className="w-full lg:w-[30%] lg:max-w-[250px] min-w-[250px]">
+    <div className="w-full lg:w-[30%] lg:max-w-[250px] min-w-[250px] shadow-lg">
       <MobileTopbar onOpen={() => setMobileOpen(true)} />
       <DesktopSidebar
         pathname={pathname}

@@ -1,37 +1,41 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
 import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
+import { useState } from "react";
+import InputField from "@/components/ui/Forms/InputField";
+
+type FormValues = {
+  height: string;
+  weight: string;
+  goal: string;
+  body_fat_percent: string;
+  muscle_mass: string;
+  birth_date: string;
+  language: string;
+};
 
 const ProfilePage = () => {
   const router = useRouter();
   const supabase = createClientComponentClient();
-
-  const [form, setForm] = useState({
-    height: "",
-    weight: "",
-    goal: "",
-    avatar: null as File | null,
-  });
   const [loading, setLoading] = useState(false);
+  const [avatar, setAvatar] = useState<File | null>(null);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      language: "en",
+    },
+  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setForm((prev) => ({ ...prev, avatar: file }));
-  };
-
-  const handleSubmit = async () => {
-    if (!form.avatar) {
+  const onSubmit = async (data: FormValues) => {
+    if (!avatar) {
       toast.error("Please upload an avatar.");
       return;
     }
@@ -45,15 +49,16 @@ const ProfilePage = () => {
 
     if (sessionError || !user) {
       toast.error("User not authenticated.");
+      setLoading(false);
       return;
     }
 
-    const fileExt = form.avatar.name.split(".").pop();
+    const fileExt = avatar.name.split(".").pop();
     const fileName = `${user.id}.${fileExt}`;
 
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("avatars")
-      .upload(fileName, form.avatar, {
+      .upload(fileName, avatar, {
         cacheControl: "3600",
         upsert: true,
       });
@@ -68,11 +73,20 @@ const ProfilePage = () => {
 
     const { error: profileError } = await supabase.from("profiles").upsert({
       id: user.id,
-
-      height: form.height,
-      weight: form.weight,
-      goal: form.goal,
+      height: data.height,
+      weight: data.weight,
+      goal: data.goal,
       avatar_url: filePath,
+      body_fat_percent: data.body_fat_percent || null,
+      muscle_mass: data.muscle_mass || null,
+      birth_date: data.birth_date || null,
+      preferences: {
+        language: data.language,
+      },
+      coach_id: null,
+      nutrition_program_id: null,
+      workout_program_id: null,
+      last_login: new Date().toISOString(),
     });
 
     if (profileError) {
@@ -80,17 +94,6 @@ const ProfilePage = () => {
       setLoading(false);
       return;
     }
-
-    const { data: signedUrlData, error: signedUrlError } =
-      await supabase.storage.from("avatars").createSignedUrl(filePath, 60 * 60);
-
-    if (signedUrlError) {
-      toast.error("Failed to create signed URL.");
-      setLoading(false);
-      return;
-    }
-
-    console.log("Signed URL:", signedUrlData?.signedUrl);
 
     toast.success("Profile updated!");
 
@@ -101,57 +104,89 @@ const ProfilePage = () => {
       .single();
 
     const role = profileData?.role || "user";
-
-    if (role === "coach") {
-      router.push("/dashboard/coaches");
-    } else {
-      router.push("/dashboard/users");
-    }
-
+    router.push(role === "coach" ? "/coaches/dashboard" : "/users/dashboard");
     setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 text-black">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
+      >
         <h2 className="text-xl font-bold mb-4 text-center text-[#2962eb]">
           Complete your profile
         </h2>
 
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Height (cm)</label>
-          <input
+        <div className="flex items-center gap-3">
+          <InputField
+            label="Height (cm)"
             type="number"
-            name="height"
-            value={form.height}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            registration={register("height", {
+              required: "Height is required",
+            })}
+            error={errors.height}
+          />
+
+          <InputField
+            label="Weight (kg)"
+            type="number"
+            registration={register("weight", {
+              required: "Weight is required",
+            })}
+            error={errors.weight}
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Weight (kg)</label>
-          <input
+        <div className="flex items-center gap-3">
+          <InputField
+            label="Body Fat (%)"
             type="number"
-            name="weight"
-            value={form.weight}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            registration={register("body_fat_percent")}
+            error={errors.body_fat_percent}
+          />
+
+          <InputField
+            label="Muscle Mass (kg)"
+            type="number"
+            registration={register("muscle_mass")}
+            error={errors.muscle_mass}
           />
         </div>
+
+        <InputField
+          label="Birth Date"
+          type="date"
+          registration={register("birth_date")}
+          error={errors.birth_date}
+        />
 
         <div className="mb-4">
           <label className="block mb-1 font-medium">Goal</label>
           <select
-            name="goal"
-            value={form.goal}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            {...register("goal", { required: "Goal is required" })}
+            className={`w-full border ${
+              errors.goal ? "border-red-500" : "border-gray-300"
+            } rounded px-3 py-2`}
           >
             <option value="">Select your goal</option>
             <option value="lose_weight">Lose Weight</option>
             <option value="gain_muscle">Gain Muscle</option>
             <option value="maintain">Maintain</option>
+          </select>
+          {errors.goal && (
+            <p className="text-red-500 text-xs mt-1">{errors.goal.message}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Preferred Language</label>
+          <select
+            {...register("language")}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          >
+            <option value="en">English</option>
+            <option value="fa">فارسی</option>
           </select>
         </div>
 
@@ -160,19 +195,19 @@ const ProfilePage = () => {
           <input
             type="file"
             accept="image/*"
-            onChange={handleFileChange}
+            onChange={(e) => setAvatar(e.target.files?.[0] || null)}
             className="w-full"
           />
         </div>
 
         <button
-          onClick={handleSubmit}
+          type="submit"
           disabled={loading}
           className="w-full bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-white py-2 rounded-full"
         >
           {loading ? <CustomLoadingSpinner /> : "Save Profile"}
         </button>
-      </div>
+      </form>
     </div>
   );
 };

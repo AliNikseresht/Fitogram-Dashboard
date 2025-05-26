@@ -1,70 +1,115 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-export interface UserProfile {
-  id: string;
-  full_name: string;
-  role: string;
-  height: number | null;
-  weight: number | null;
-  goal: string | null;
-  avatar_url?: string | null;
-}
+import { UserProfile } from "@/types/UserProfile";
 
 export function useUserProfile() {
   const supabase = createClientComponentClient();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
+    setError(null);
 
+    // Get current session
     const {
       data: { session },
       error: sessionError,
     } = await supabase.auth.getSession();
 
     if (sessionError || !session?.user) {
-      console.error("Session not found", sessionError);
+      setError("Session not found");
       setLoading(false);
       return;
     }
 
     const user = session.user;
 
+    // Fetch profile with coach relation and new fields
     const { data: profileData, error } = await supabase
       .from("profiles")
-      .select("*")
+      .select(
+        `
+        id,
+        full_name,
+        role,
+        height,
+        weight,
+        goal,
+        avatar_url,
+        body_fat_percent,
+        muscle_mass,
+        birth_date,
+        created_at,
+        updated_at,
+        workout_program_id,
+        nutrition_program_id,
+        status,
+        last_login,
+        preferences,
+        coach:profiles!coach_id (
+          id,
+          full_name
+        )
+      `
+      )
       .eq("id", user.id)
       .maybeSingle();
 
     if (error) {
-      console.error("Profile fetch error", error);
+      setError(error.message);
       setLoading(false);
       return;
     }
 
-    const finalProfile = profileData ?? {
+    // Fix coach field: convert from array to single object or null
+    const mappedProfile: UserProfile | null = profileData
+      ? {
+          ...profileData,
+          coach:
+            Array.isArray(profileData.coach) && profileData.coach.length > 0
+              ? profileData.coach[0]
+              : null,
+        }
+      : null;
+
+    const finalProfile: UserProfile = mappedProfile ?? {
       id: user.id,
-      full_name: user.user_metadata.full_name || "",
-      role: user.user_metadata.role || "user",
+      full_name: (user.user_metadata.full_name as string) || "",
+      role: (user.user_metadata.role as "user" | "coach") || "user",
       height: null,
       weight: null,
       goal: null,
-      avatar_url: user.user_metadata.avatar_url || null,
+      avatar_url: (user.user_metadata.avatar_url as string) || null,
+      coach: null,
+      body_fat_percent: null,
+      muscle_mass: null,
+      birth_date: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      workout_program_id: null,
+      nutrition_program_id: null,
+      status: "active",
+      last_login: null,
+      preferences: null,
     };
 
+    // If profile doesn't exist, insert new one
     if (!profileData) {
       const { error: insertError } = await supabase
         .from("profiles")
         .insert(finalProfile);
-      if (insertError) console.error("Error inserting profile", insertError);
+      if (insertError) {
+        setError(insertError.message);
+      }
     }
 
     setProfile(finalProfile);
 
+    // Set public avatar URL if exists
     if (finalProfile.avatar_url) {
       const { data } = supabase.storage
         .from("avatars")
@@ -76,8 +121,14 @@ export function useUserProfile() {
   }, [supabase]);
 
   useEffect(() => {
-    fetchProfile();
+    let isMounted = true;
+    fetchProfile().then(() => {
+      if (isMounted) setLoading(false);
+    });
+    return () => {
+      isMounted = false;
+    };
   }, [fetchProfile]);
 
-  return { profile, avatarUrl, loading };
+  return { profile, avatarUrl, loading, error };
 }

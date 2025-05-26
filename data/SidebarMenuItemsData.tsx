@@ -11,7 +11,7 @@ import {
 import { HiOutlineHome } from "react-icons/hi";
 
 export const menuItems: MenuItem[] = [
-  { label: "Dashboard", icon: <HiOutlineHome />, href: "/" },
+  { label: "Dashboard", icon: <HiOutlineHome />, href: "/dashboard" },
   { label: "Workouts", icon: <FaDumbbell />, href: "/workouts" },
   { label: "Nutrition", icon: <FaUtensils />, href: "/nutrition" },
   { label: "Progress", icon: <FaChartLine />, href: "/progress" },
