@@ -22,7 +22,7 @@ export function UserReminders() {
   }, []);
 
   return (
-    <section className="max-w-lg bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-600 rounded-xl p-5 text-white shadow-lg">
+    <section className="w-full max-w-lg bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-600 rounded-xl p-5 text-white shadow-lg">
       <h3 className="text-xl font-bold mb-4 drop-shadow-lg">
         💡 Reminders & Tips
       </h3>

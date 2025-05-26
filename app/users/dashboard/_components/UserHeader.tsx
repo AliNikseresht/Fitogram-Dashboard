@@ -12,13 +12,6 @@ export const UserHeader = () => {
   if (!profile)
     return <div className="text-red-500">No profile data found.</div>;
 
-  const birthDate = profile.birth_date ? new Date(profile.birth_date) : null;
-  const age = birthDate
-    ? Math.floor(
-        (Date.now() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25)
-      )
-    : null;
-
   return (
     <div className="flex justify-between items-center">
       <div>
@@ -31,20 +24,17 @@ export const UserHeader = () => {
         {avatarUrl && (
           <Image
             src={avatarUrl}
-            alt="Avatar"
-            width={80}
-            height={80}
-            className="rounded-full"
+            alt="user avatar"
+            width={60}
+            height={60}
+            className="rounded-full border-4 border-black shadow-lg"
           />
         )}
         <div className="flex flex-col justify-center">
           <h2 className="hidden lg:flex text-xl text-indigo-700">
             {profile.full_name}
           </h2>
-          <p className="text-sm text-gray-600">Age: {age ?? "Not specified"}</p>
-          <p className="text-sm text-gray-600">
-            Goal: {profile.goal ?? "Not specified"}
-          </p>
+          <p className="text-sm text-gray-600">{profile.role}</p>
         </div>
       </div>
     </div>
