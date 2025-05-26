@@ -1,9 +1,9 @@
-import React from "react";
-import UsersPageClient from "./_components/UserPageClient";
+import UserDashboard from "./_components/UserPageClient";
 
-
-const UserPage = () => {
-  return <UsersPageClient />;
-};
-
-export default UserPage;
+export default function DashboardPage() {
+  return (
+    <main className="min-h-screen w-full">
+      <UserDashboard />
+    </main>
+  );
+}
