@@ -72,7 +72,7 @@ const LoginForm = () => {
 
         toast.success("Logged in successfully!");
         router.push(
-          role === "coach" ? "/dashboard/coaches" : "/dashboard/users"
+          role === "coach" ? "/coaches/dashboard" : "/users/dashboard"
         );
       } else {
         // update last_login
@@ -83,7 +83,7 @@ const LoginForm = () => {
 
         toast.success("Logged in successfully!");
         router.push(
-          profile.role === "coach" ? "/dashboard/coaches" : "/dashboard/users"
+          profile.role === "coach" ? "/coaches/dashboard" : "/users/dashboard"
         );
       }
     } catch {

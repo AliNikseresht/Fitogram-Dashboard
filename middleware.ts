@@ -34,12 +34,12 @@ export async function middleware(req: NextRequest) {
 
   const userRole = session.user.user_metadata?.role;
 
-  if (pathname.startsWith("/dashboard/users") && userRole !== "user") {
-    return NextResponse.redirect(new URL("/dashboard/coaches", req.url));
+  if (pathname.startsWith("/users/dashboard") && userRole !== "user") {
+    return NextResponse.redirect(new URL("/coaches/dashboard", req.url));
   }
 
   if (pathname.startsWith("/dashboard/coaches") && userRole !== "coach") {
-    return NextResponse.redirect(new URL("/dashboard/users", req.url));
+    return NextResponse.redirect(new URL("/users/dashboard", req.url));
   }
 
   if (pathname === "/") {
@@ -48,9 +48,9 @@ export async function middleware(req: NextRequest) {
     }
 
     if (userRole === "user") {
-      return NextResponse.redirect(new URL("/dashboard/users", req.url));
+      return NextResponse.redirect(new URL("/users/dashboard", req.url));
     } else if (userRole === "coach") {
-      return NextResponse.redirect(new URL("/dashboard/coaches", req.url));
+      return NextResponse.redirect(new URL("/coaches/dashboard", req.url));
     } else {
       return NextResponse.redirect(new URL("/login", req.url));
     }

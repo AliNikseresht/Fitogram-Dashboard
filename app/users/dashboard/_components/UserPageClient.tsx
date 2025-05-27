@@ -2,12 +2,15 @@
 
 import { useUserProfile } from "@/hooks/useUserProfile";
 import Link from "next/link";
-import LoadingSkeleton from "@/components/ui/loadings/CustomLoadingSkeleton";
 import { UserHeader } from "./UserHeader";
 import { UserGoalProgress } from "./UserGoalProgress";
 import { UserReminders } from "./UserReminders";
 import { UserSummaryCards } from "./UserSummaryCards";
-import Image from "next/image";
+import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
+import DailyLogForm from "./DailyLogForm/DailyLogForm";
+import WeightChart from "./charts/WeightChart";
+import WaterIntakeChart from "./charts/WaterIntakeChart";
+import MoodChart from "./charts/MoodChart";
 
 interface QuickLink {
   label: string;
@@ -17,21 +20,14 @@ interface QuickLink {
 }
 
 export default function DashboardPage() {
-  const { profile, loading, error, avatarUrl } = useUserProfile();
+  const { profile, loading, error } = useUserProfile();
 
-  if (loading) return <LoadingSkeleton />;
+  if (loading) return <CustomLoadingBars />;
   if (error) return <div className="text-red-500">Error: {error}</div>;
   if (!profile)
     return <div className="text-red-500">No profile data found.</div>;
 
   const role = profile?.role ?? "user";
-
-  const birthDate = profile.birth_date ? new Date(profile.birth_date) : null;
-  const age = birthDate
-    ? Math.floor(
-        (Date.now() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25)
-      )
-    : null;
 
   const quickLinks: QuickLink[] = [
     {
@@ -61,105 +57,54 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex flex-col p-3 lg:p-6 gap-6 w-full">
-      {/* User Info */}
-      <UserHeader />
-
-      {/* Physical Stats */}
-
-      <div className="flex justify-between items-center gap-2 bg-gradient-to-b from-[#2962eb] to-[#7b3aed] rounded-t-xl w-full p-3 lg:p-5">
-        <div className="flex items-center gap-3">
-          {avatarUrl && (
-            <Image
-              src={avatarUrl}
-              alt="user avatar"
-              width={60}
-              height={60}
-              className="rounded-full border-4 border-[#fff] shadow-lg"
-            />
-          )}
-          <div className="flex flex-col justify-center">
-            <h2 className="hidden lg:flex text-2xl text-[#fff]">
-              {profile.full_name}
-            </h2>
-
-            <p className="text-sm text-[#fff]">Age: {age ?? "Not specified"}</p>
-            <p className="text-sm text-[#fff]">
-              Goal: {profile.goal ?? "Not specified"}
+    <div className="flex flex-col p-3 lg:p-5 gap-6 w-full">
+      <div className="flex flex-col bg-[#fff] p-0 rounded-xl shadow">
+        <UserHeader />
+        <UserGoalProgress progressPercent={70} />
+        <UserSummaryCards />
+      </div>
+      <div className="flex justify-between w-full">
+        <div className="bg-white p-4 rounded-xl border grid gap-4 md:grid-cols-2">
+          <div className="space-y-1">
+            <p className="text-gray-600">Coach:</p>
+            <p className="font-medium">
+              {profile.coach
+                ? profile.coach.full_name
+                : profile.status === "pending_coach_request"
+                ? "Coach request is pending"
+                : "No coach assigned"}
             </p>
           </div>
         </div>
-        <div className="flex items-center justify-between w-full max-w-xl gap-3">
-          <StatCard
-            label="Weight"
-            value={profile.weight ? `${profile.weight} kg` : "N/A"}
-          />
-          <StatCard
-            label="Height"
-            value={profile.height ? `${profile.height} cm` : "N/A"}
-          />
-          <StatCard
-            label="Body Fat %"
-            value={
-              profile.body_fat_percent ? `${profile.body_fat_percent}%` : "N/A"
-            }
-          />
-          <StatCard
-            label="Muscle Mass"
-            value={profile.muscle_mass ? `${profile.muscle_mass} kg` : "N/A"}
-          />
-        </div>
+        <DailyLogForm profileId={profile.id} />
       </div>
-
-      <UserGoalProgress progressPercent={70} />
-      <UserSummaryCards />
-
-      {/* Program Info */}
+      <div className="flex w-full justify-start flex-col lg:flex-row">
+        <WeightChart profileId={profile.id} />
+        <WaterIntakeChart profileId={profile.id} />
+        <MoodChart profileId={profile.id} />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <UserReminders />
         <ProgramCard
           label="Workout Program"
           id={profile.workout_program_id}
           fallbackText={profile.coach ? "Personalized (with coach)" : "General"}
-          href={`/programs/workout/${profile.workout_program_id ?? ""}`}
+          href={
+            profile.workout_program_id
+              ? `/programs/workout/${profile.workout_program_id}`
+              : ""
+          }
         />
         <ProgramCard
           label="Nutrition Program"
           id={profile.nutrition_program_id}
           fallbackText="Not assigned"
-          href={`/programs/nutrition/${profile.nutrition_program_id ?? ""}`}
+          href={
+            profile.nutrition_program_id
+              ? `/programs/nutrition/${profile.nutrition_program_id}`
+              : ""
+          }
         />
-      </div>
-
-      {/* Status & Last Login */}
-      <div className="bg-white p-4 rounded-xl border flex justify-between w-full">
-        <div className="bg-white p-4 rounded-xl w-full max-w-lg">
-          <p className="text-gray-600 mb-1">Coach:</p>
-          <p className="font-medium">
-            {profile.coach
-              ? profile.coach.full_name
-              : profile.status === "pending_coach_request"
-              ? "Coach request is pending"
-              : "No coach assigned"}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div>
-            <p className="text-gray-600">Status:</p>
-            <p className="font-medium capitalize">
-              {profile.status ?? "unknown"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-600">Last Login:</p>
-            <p className="font-medium">
-              {profile.last_login
-                ? new Date(profile.last_login).toLocaleString()
-                : "Never logged in"}
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Quick Shortcuts */}
@@ -168,21 +113,12 @@ export default function DashboardPage() {
           <Link
             key={label}
             href={href}
-            className={`${bgColor} ${textColor} rounded-xl p-4 text-center`}
+            className={`${bgColor} ${textColor} rounded-xl p-4 text-center font-semibold`}
           >
             {label}
           </Link>
         ))}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-gray-100 rounded-xl p-4 text-center w-44">
-      <p className="text-gray-600">{label}</p>
-      <p className="text-lg font-bold">{value}</p>
     </div>
   );
 }
@@ -201,8 +137,8 @@ function ProgramCard({
   if (!id) {
     return (
       <div className="bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-600 rounded-xl p-4 text-center">
-        <p className="text-[#fff]">{label}</p>
-        <p className="text-lg font-bold text-[#fff]">{fallbackText}</p>
+        <p className="text-white">{label}</p>
+        <p className="text-lg font-bold text-white">{fallbackText}</p>
       </div>
     );
   }

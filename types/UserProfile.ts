@@ -7,7 +7,6 @@ export interface UserProfile {
   goal: string | null;
   avatar_url?: string | null;
   coach?: { id: string; full_name: string } | null;
-
   body_fat_percent?: number | null;
   muscle_mass?: number | null;
   birth_date?: string | null;
