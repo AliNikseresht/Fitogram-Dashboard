@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FormValues, Mood } from "@/types/DailyLogFormTypes";
@@ -23,11 +23,19 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormValues>();
+    watch,
+  } = useForm<FormValues>({
+    defaultValues: {
+      weight: 60,
+      notes: "",
+    },
+  });
 
-  const [waterIntake, setWaterIntake] = useState<number>(0);
-  const [mood, setMood] = useState<Mood | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [waterIntake, setWaterIntake] = React.useState<number>(0);
+  const [mood, setMood] = React.useState<Mood | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const weightValue = watch("weight");
 
   const onSubmit = async (data: FormValues) => {
     if (!profileId) {
@@ -69,22 +77,31 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full max-w-md bg-white p-4 rounded-xl shadow-md space-y-4"
+      className="w-full max-w-sm bg-[#fff] p-4 rounded-xl shadow-md space-y-4"
     >
       <h2 className="text-lg font-semibold">Daily Log</h2>
 
-      <input
-        type="number"
-        placeholder="Weight (kg)"
-        {...register("weight", {
-          required: "Please enter your weight",
-          min: { value: 20, message: "Weight must be at least 20kg" },
-        })}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-      />
-      {errors.weight && (
-        <p className="text-red-500 text-sm">{errors.weight.message}</p>
-      )}
+      <div>
+        <label className="flex justify-between items-center">
+          <p>Weight</p>
+          <p className="text-[#777d8a]">{weightValue} kg</p>
+        </label>
+
+        <input
+          type="range"
+          min={20}
+          max={200}
+          step={1}
+          {...register("weight", {
+            required: "Please enter your weight",
+            min: { value: 20, message: "Weight must be at least 20kg" },
+          })}
+          className="range range-xs in-range:bg-[#e7e8eb] in-range:text-[#0ea5e9]"
+        />
+        {errors.weight && (
+          <p className="text-red-500 text-sm">{errors.weight.message}</p>
+        )}
+      </div>
 
       <WaterIntakeSelector
         waterIntake={waterIntake}
@@ -98,7 +115,7 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-gradient-to-r from-[#0583c7] to-[#9f1daf] text-white py-2 rounded cursor-pointer disabled:opacity-50"
+        className="w-full bg-[#0284c7] text-white py-2 rounded cursor-pointer disabled:opacity-50 hover:bg-[#027bc7] duration-200"
       >
         {loading ? <CustomLoadingSpinner /> : "Save Log"}
       </button>

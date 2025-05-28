@@ -11,6 +11,9 @@ import DailyLogForm from "./DailyLogForm/DailyLogForm";
 import WeightChart from "./charts/WeightChart";
 import WaterIntakeChart from "./charts/WaterIntakeChart";
 import MoodChart from "./charts/MoodChart";
+import CoachChat from "./chat/CoachChat";
+import SleepLogForm from "./SleepLogForm/SleepLogForm";
+import SleepCard from "./SleepLogForm/SleepCard";
 
 interface QuickLink {
   label: string;
@@ -63,26 +66,18 @@ export default function DashboardPage() {
         <UserGoalProgress progressPercent={70} />
         <UserSummaryCards />
       </div>
-      <div className="flex justify-between w-full">
-        <div className="bg-white p-4 rounded-xl border grid gap-4 md:grid-cols-2">
-          <div className="space-y-1">
-            <p className="text-gray-600">Coach:</p>
-            <p className="font-medium">
-              {profile.coach
-                ? profile.coach.full_name
-                : profile.status === "pending_coach_request"
-                ? "Coach request is pending"
-                : "No coach assigned"}
-            </p>
-          </div>
-        </div>
+      <div className="flex justify-between w-full flex-col lg:flex-row">
         <DailyLogForm profileId={profile.id} />
+        <SleepLogForm userId={profile.id} />
+        <CoachChat />
       </div>
-      <div className="flex w-full justify-start flex-col lg:flex-row">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 w-full">
         <WeightChart profileId={profile.id} />
         <WaterIntakeChart profileId={profile.id} />
         <MoodChart profileId={profile.id} />
+        <SleepCard userId={profile.id} />
       </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <UserReminders />
         <ProgramCard

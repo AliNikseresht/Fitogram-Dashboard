@@ -1,4 +1,5 @@
 import React from "react";
+import { FaBottleWater } from "react-icons/fa6";
 
 type Props = {
   waterIntake: number;
@@ -7,17 +8,20 @@ type Props = {
 
 const WaterIntakeSelector: React.FC<Props> = ({ waterIntake, onChange }) => {
   return (
-    <div>
-      <label className="block text-sm font-medium mb-1">Water Intake</label>
-      <div className="flex gap-1">
+    <div className="flex flex-col gap-2">
+      <label className="flex justify-between items-center w-full text-sm font-medium mb-2">
+        <p>Water Intake</p>
+        <span className="text-sm text-gray-500">{waterIntake}/8 glasses</span>
+      </label>
+      <div className="flex">
         {[...Array(8)].map((_, i) => (
-          <button
+          <FaBottleWater
             key={i}
-            type="button"
-            className={`w-6 h-6 rounded-full border ${
-              i < waterIntake ? "bg-blue-500" : "bg-gray-200"
-            }`}
+            size={25}
             onClick={() => onChange(i + 1)}
+            className={`${
+              i < waterIntake ? "text-[#0ea5e9]" : "text-[#9ca3af]"
+            }`}
           />
         ))}
       </div>
