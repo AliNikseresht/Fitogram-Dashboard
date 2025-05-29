@@ -1,7 +1,8 @@
 "use client";
 
-import { useUserProfile } from "@/hooks/useUserProfile";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { UserHeader } from "./UserHeader";
 import { UserGoalProgress } from "./UserGoalProgress";
 import { UserReminders } from "./UserReminders";
@@ -14,6 +15,8 @@ import MoodChart from "./charts/MoodChart";
 import CoachChat from "./chat/CoachChat";
 import SleepLogForm from "./SleepLogForm/SleepLogForm";
 import SleepCard from "./SleepLogForm/SleepCard";
+import fetchSleepLogs from "@/services/fetchSleepLogs";
+import formatDurationHoursMinutes from "@/functions/formatDuration";
 
 interface QuickLink {
   label: string;
@@ -24,6 +27,27 @@ interface QuickLink {
 
 export default function DashboardPage() {
   const { profile, loading, error } = useUserProfile();
+  const [sleepDuration, setSleepDuration] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (profile?.id) {
+      const fetchSleep = async () => {
+        try {
+          const logs = await fetchSleepLogs(profile.id);
+          if (logs.length > 0) {
+            const lastLog = logs[logs.length - 1];
+            const formattedDuration = formatDurationHoursMinutes(
+              lastLog.duration
+            );
+            setSleepDuration(formattedDuration);
+          }
+        } catch (err) {
+          console.error("Error fetching sleep logs:", err);
+        }
+      };
+      fetchSleep();
+    }
+  }, [profile?.id]);
 
   if (loading) return <CustomLoadingBars />;
   if (error) return <div className="text-red-500">Error: {error}</div>;
@@ -64,7 +88,7 @@ export default function DashboardPage() {
       <div className="flex flex-col bg-[#fff] p-0 rounded-xl shadow">
         <UserHeader />
         <UserGoalProgress progressPercent={70} />
-        <UserSummaryCards />
+        <UserSummaryCards sleep={sleepDuration} />
       </div>
       <div className="flex justify-between w-full flex-col lg:flex-row">
         <DailyLogForm profileId={profile.id} />
