@@ -1,9 +1,11 @@
 "use client";
 
-import fetchSleepLogs from "@/services/fetchSleepLogs";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 
 type SleepLog = {
+  id: number;
+  user_id: string;
   sleep_date: string;
   sleep_time: string;
   wake_time: string;
@@ -16,16 +18,16 @@ type Props = {
 };
 
 const SleepCard: React.FC<Props> = ({ userId }) => {
-  const [logs, setLogs] = useState<SleepLog[]>([]);
-  const [filteredLogs, setFilteredLogs] = useState<SleepLog[]>([]);
   const [filterDays, setFilterDays] = useState(7);
 
-  useEffect(() => {
-    fetchSleepLogs(userId).then((data) => {
-      setLogs(data);
-      setFilteredLogs(data.slice(-filterDays));
-    });
-  }, [userId, filterDays]);
+  const { data: logs = [] } = useRealtimeTable<SleepLog>({
+    table: "sleep_logs",
+    filterColumn: "user_id",
+    filterValue: userId,
+    orderBy: { column: "sleep_date", ascending: true },
+  });
+
+  const filteredLogs = logs.slice(-filterDays);
 
   const averageDuration =
     filteredLogs.reduce((acc, cur) => acc + cur.duration, 0) /
@@ -42,7 +44,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
   );
 
   return (
-    <div className="p-2 w-full lg:max-w-4xl mx-auto space-y-6">
+    <div className="w-full lg:max-w-4xl mx-auto space-y-6">
       <div>
         <label
           htmlFor="daysFilter"
@@ -92,7 +94,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto border rounded shadow">
+      <div className="overflow-x-auto border border-[#bababa] rounded shadow overflow-y-auto h-20">
         <table className="w-full text-left min-w-[500px]">
           <thead className="bg-gray-200">
             <tr>
@@ -105,7 +107,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
           </thead>
           <tbody>
             {filteredLogs.map((log) => (
-              <tr key={log.sleep_date} className="border-b hover:bg-gray-100">
+              <tr key={log.id} className="border-b hover:bg-gray-100">
                 <td className="p-2 text-xs sm:text-sm">
                   {new Date(log.sleep_date).toLocaleDateString()}
                 </td>

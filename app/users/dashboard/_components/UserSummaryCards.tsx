@@ -18,7 +18,7 @@ const SummaryCard = ({ icon, label, value, iconColor }: SummaryCardProps) => (
   </div>
 );
 
-export const UserSummaryCards = () => {
+export const UserSummaryCards = ({ sleep }: { sleep: string | null }) => {
   return (
     <div className="rounded-b-2xl w-full p-5 grid grid-cols-2 sm:grid-cols-4 gap-4 ">
       <SummaryCard
@@ -43,7 +43,7 @@ export const UserSummaryCards = () => {
         icon={<GiNightSleep size={22} />}
         iconColor="#6366f1"
         label="Sleep"
-        value="7h 12m"
+        value={sleep ?? "N/A"}
       />
     </div>
   );

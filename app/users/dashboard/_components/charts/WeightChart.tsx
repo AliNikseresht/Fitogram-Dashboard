@@ -1,6 +1,6 @@
-import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
-import fetchDailyLogs from "@/services/fetchDailyLogs";
-import React, { useEffect, useState } from "react";
+"use client";
+
+import React from "react";
 import {
   LineChart,
   Line,
@@ -10,27 +10,22 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
+import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 
 type WeightLog = {
+  id: string | number;
   weight: number;
   log_date: string;
 };
 
 const WeightChart = ({ profileId }: { profileId: string }) => {
-  const [data, setData] = useState<WeightLog[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const logs = await fetchDailyLogs(profileId);
-        setData(logs);
-      } catch {
-        setError("Failed to load weight logs");
-      }
-    }
-    loadData();
-  }, [profileId]);
+  const { data, error } = useRealtimeTable<WeightLog>({
+    table: "daily_logs",
+    filterColumn: "profile_id",
+    filterValue: profileId,
+    orderBy: { column: "log_date", ascending: true },
+  });
 
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;
   if (data.length === 0) return <CustomLoadingBars />;
