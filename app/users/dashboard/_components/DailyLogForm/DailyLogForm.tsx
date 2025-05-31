@@ -79,7 +79,7 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
       onSubmit={handleSubmit(onSubmit)}
       className="w-full max-w-sm bg-[#fff] p-4 rounded-xl shadow-md space-y-4"
     >
-      <h2 className="text-lg font-semibold">Daily Log</h2>
+      <h2 className="font-semibold">Daily Log</h2>
 
       <div>
         <label className="flex justify-between items-center">

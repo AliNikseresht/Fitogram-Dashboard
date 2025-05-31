@@ -16,7 +16,7 @@ const CoachChat = () => {
 
   return (
     <div className="bg-[#fff] p-4 rounded-xl w-full max-w-sm flex flex-col h-full">
-      <p className="text-gray-600 mb-4 font-bold">Coach Chat</p>
+      <p className="mb-4 font-bold">Coach Chat</p>
       {profile.coach ? (
         <div className="space-y-3">
           <div className="flex gap-2 items-center">

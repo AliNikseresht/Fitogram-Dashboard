@@ -50,10 +50,11 @@ export function useUserProfile() {
         status,
         last_login,
         preferences,
-        coach:profiles!coach_id (
-          id,
-          full_name
-        )
+    coach:coach_id (
+    id,
+    full_name,
+    avatar_url
+  )
       `
       )
       .eq("id", user.id)

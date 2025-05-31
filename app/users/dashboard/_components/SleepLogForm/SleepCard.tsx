@@ -3,16 +3,8 @@
 import React, { useState } from "react";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
-
-type SleepLog = {
-  id: number;
-  user_id: string;
-  sleep_date: string;
-  sleep_time: string;
-  wake_time: string;
-  duration: number;
-  quality: number;
-};
+import { SleepLog } from "@/types/SleepTableTypes";
+import { SleepTable } from "./SleepTable";
 
 type Props = {
   userId: string;
@@ -49,7 +41,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
 
   return (
     <div className="w-full mx-auto space-y-6">
-      <div>
+      <>
         <label
           htmlFor="daysFilter"
           className="mr-2 font-semibold text-sm md:text-sm"
@@ -67,7 +59,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
           <option value={30}>30 days</option>
           <option value={logs.length}>All</option>
         </select>
-      </div>
+      </>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div className="bg-blue-100 w-full p-4 rounded shadow text-center flex flex-col items-center justify-center">
@@ -99,32 +91,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
       </div>
 
       <div className="overflow-x-auto border border-[#bababa] rounded shadow overflow-y-auto h-52">
-        <table className="w-full text-left min-w-[500px]">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="p-2 text-xs sm:text-sm">Date</th>
-              <th className="p-2 text-xs sm:text-sm">Sleep Time</th>
-              <th className="p-2 text-xs sm:text-sm">Wake Time</th>
-              <th className="p-2 text-xs sm:text-sm">Duration (hrs)</th>
-              <th className="p-2 text-xs sm:text-sm">Quality</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredLogs.map((log) => (
-              <tr key={log.id} className="border-b border-[#bababa] hover:bg-gray-100">
-                <td className="p-2 text-xs sm:text-sm">
-                  {new Date(log.sleep_date).toLocaleDateString()}
-                </td>
-                <td className="p-2 text-xs sm:text-sm">{log.sleep_time}</td>
-                <td className="p-2 text-xs sm:text-sm">{log.wake_time}</td>
-                <td className="p-2 text-xs sm:text-sm">
-                  {log.duration.toFixed(2)}
-                </td>
-                <td className="p-2 text-xs sm:text-sm">{log.quality}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <SleepTable logs={filteredLogs} />
       </div>
     </div>
   );

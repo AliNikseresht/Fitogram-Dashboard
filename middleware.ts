@@ -38,7 +38,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/coaches/dashboard", req.url));
   }
 
-  if (pathname.startsWith("/dashboard/coaches") && userRole !== "coach") {
+  if (pathname.startsWith("/coaches/dashboard") && userRole !== "coach") {
     return NextResponse.redirect(new URL("/users/dashboard", req.url));
   }
 
@@ -62,8 +62,8 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/",
-    "/dashboard/:path*",
-    "/dashboard",
+    "/users/dashboard/:path*",
+    "/coaches/dashboard/:path*",
     "/login",
     "/register",
     "/profile",

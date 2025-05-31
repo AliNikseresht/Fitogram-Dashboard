@@ -4,14 +4,8 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
-
-type SleepFormValues = {
-  sleepHour: string;
-  sleepMinute: string;
-  wakeHour: string;
-  wakeMinute: string;
-  quality: number;
-};
+import { SleepFormValues } from "@/types/SleepTableTypes";
+import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
 
 type Props = {
   userId: string;
@@ -104,19 +98,22 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full max-w-sm bg-white p-4 rounded-xl shadow-md space-y-4"
+      className="w-full max-w-sm bg-white p-4 rounded-xl shadow-md space-y-4 flex flex-col justify-between"
     >
-      <h2 className="text-lg font-bold mb-4">🛌 Sleep Log</h2>
+      <h2 className="font-bold mb-4">Sleep Log</h2>
 
-      <div>
-        <label className="block mb-1 font-semibold">Sleep Time</label>
+      <div className="space-y-2">
+        <label className="block mb-1 text-sm">Sleep Time</label>
         <div className="flex space-x-2">
           <Controller
             name="sleepHour"
             control={control}
             rules={{ required: "Sleep hour required" }}
             render={({ field }) => (
-              <select {...field} className="border rounded p-2 w-20">
+              <select
+                {...field}
+                className="border border-[#bababa] rounded p-2 w-20"
+              >
                 <option value="">HH</option>
                 {hours.map((h) => (
                   <option key={h} value={h}>
@@ -131,7 +128,10 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
             control={control}
             rules={{ required: "Sleep minute required" }}
             render={({ field }) => (
-              <select {...field} className="border rounded p-2 w-20">
+              <select
+                {...field}
+                className="border border-[#bababa] rounded p-2 w-20"
+              >
                 <option value="">MM</option>
                 {minutes.map((m) => (
                   <option key={m} value={m}>
@@ -147,17 +147,18 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
             {errors.sleepHour?.message || errors.sleepMinute?.message}
           </p>
         )}
-      </div>
 
-      <div>
-        <label className="block mb-1 font-semibold">Wake Time</label>
+        <label className="block mb-1 text-sm">Wake Time</label>
         <div className="flex space-x-2">
           <Controller
             name="wakeHour"
             control={control}
             rules={{ required: "Wake hour required" }}
             render={({ field }) => (
-              <select {...field} className="border rounded p-2 w-20">
+              <select
+                {...field}
+                className="border border-[#bababa] rounded p-2 w-20"
+              >
                 <option value="">HH</option>
                 {hours.map((h) => (
                   <option key={h} value={h}>
@@ -172,7 +173,10 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
             control={control}
             rules={{ required: "Wake minute required" }}
             render={({ field }) => (
-              <select {...field} className="border rounded p-2 w-20">
+              <select
+                {...field}
+                className="border border-[#bababa] rounded p-2 w-20"
+              >
                 <option value="">MM</option>
                 {minutes.map((m) => (
                   <option key={m} value={m}>
@@ -191,23 +195,31 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
       </div>
 
       <div>
-        <label className="block mb-1 font-semibold">Sleep Quality</label>
+        <div className="w-full flex justify-between items-center">
+          <label className="block mb-1">Sleep Quality</label>
+          <p>Quality: {qualityValue}/5</p>
+        </div>
         <Controller
           name="quality"
           control={control}
           render={({ field }) => (
-            <input type="range" min={1} max={5} {...field} className="w-full" />
+            <input
+              type="range"
+              min={1}
+              max={5}
+              {...field}
+              className="range range-xs in-range:bg-[#e7e8eb] in-range:text-[#0ea5e9]"
+            />
           )}
         />
-        <p>Quality: {qualityValue}/5</p>
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+        className="w-full bg-[#0284c7] text-white py-2 rounded cursor-pointer disabled:opacity-50 hover:bg-[#027bc7] duration-200"
       >
-        {loading ? "Saving..." : "Submit"}
+        {loading ? <CustomLoadingSpinner /> : "Submit"}
       </button>
     </form>
   );
