@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
+import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 
 type SleepLog = {
   id: number;
@@ -20,12 +21,15 @@ type Props = {
 const SleepCard: React.FC<Props> = ({ userId }) => {
   const [filterDays, setFilterDays] = useState(7);
 
-  const { data: logs = [] } = useRealtimeTable<SleepLog>({
+  const { data: logs = [], error } = useRealtimeTable<SleepLog>({
     table: "sleep_logs",
     filterColumn: "user_id",
     filterValue: userId,
     orderBy: { column: "sleep_date", ascending: true },
   });
+
+  if (logs.length === 0) return <CustomLoadingBars />;
+  if (error) return <p className="text-red-600 font-semibold">{error}</p>;
 
   const filteredLogs = logs.slice(-filterDays);
 
@@ -44,19 +48,19 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
   );
 
   return (
-    <div className="w-full lg:max-w-4xl mx-auto space-y-6">
+    <div className="w-full mx-auto space-y-6">
       <div>
         <label
           htmlFor="daysFilter"
-          className="mr-2 font-semibold text-sm md:text-base"
+          className="mr-2 font-semibold text-sm md:text-sm"
         >
-          Show last
+          Show last:
         </label>
         <select
           id="daysFilter"
           value={filterDays}
           onChange={(e) => setFilterDays(Number(e.target.value))}
-          className="border rounded p-1 text-sm md:text-base"
+          className="border border-[#bababa] rounded p-1 text-sm md:text-sm"
         >
           <option value={7}>7 days</option>
           <option value={14}>14 days</option>
@@ -66,7 +70,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="bg-blue-100 p-4 rounded shadow text-center">
+        <div className="bg-blue-100 w-full p-4 rounded shadow text-center flex flex-col items-center justify-center">
           <p className="text-xs sm:text-sm text-gray-600">
             Average Sleep Duration
           </p>
@@ -74,7 +78,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
             {averageDuration.toFixed(2)} hrs
           </p>
         </div>
-        <div className="bg-green-100 p-4 rounded shadow text-center">
+        <div className="bg-green-100 w-full p-4 rounded shadow text-center flex flex-col items-center justify-center">
           <p className="text-xs sm:text-sm text-gray-600">
             Best Sleep Quality Day
           </p>
@@ -83,7 +87,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
           </p>
           <p>Quality: {bestDay?.quality || "-"}</p>
         </div>
-        <div className="bg-red-100 p-4 rounded shadow text-center">
+        <div className="bg-red-100 w-full p-4 rounded shadow text-center flex flex-col items-center justify-center">
           <p className="text-xs sm:text-sm text-gray-600">
             Worst Sleep Quality Day
           </p>
@@ -94,7 +98,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto border border-[#bababa] rounded shadow overflow-y-auto h-20">
+      <div className="overflow-x-auto border border-[#bababa] rounded shadow overflow-y-auto h-52">
         <table className="w-full text-left min-w-[500px]">
           <thead className="bg-gray-200">
             <tr>
@@ -107,7 +111,7 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
           </thead>
           <tbody>
             {filteredLogs.map((log) => (
-              <tr key={log.id} className="border-b hover:bg-gray-100">
+              <tr key={log.id} className="border-b border-[#bababa] hover:bg-gray-100">
                 <td className="p-2 text-xs sm:text-sm">
                   {new Date(log.sleep_date).toLocaleDateString()}
                 </td>

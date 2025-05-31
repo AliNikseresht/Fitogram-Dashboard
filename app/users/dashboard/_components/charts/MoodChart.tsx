@@ -77,41 +77,41 @@ const MoodChart = ({ profileId }: { profileId: string }) => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart
-        data={moodData}
-        margin={{ top: 20, right: 0, left: 0, bottom: 20 }}
-      >
-        <CartesianGrid stroke="#ddd" strokeDasharray="4 4" />
-        <XAxis
-          dataKey="log_date"
-          tick={{ fontSize: 12, fill: "#666" }}
-          tickLine={false}
-          padding={{ left: 10, right: 10 }}
-        />
-        <YAxis
-          domain={[1, 3]}
-          ticks={[1, 2, 3]}
-          tickFormatter={(value) =>
-            moodReverseMapping[value].charAt(0).toUpperCase() +
-            moodReverseMapping[value].slice(1)
-          }
-          tick={{ fontSize: 12, fill: "#666" }}
-          tickLine={false}
-          axisLine={false}
-        />
-        <Tooltip content={<CustomTooltip />} />
-        <Line
-          type="monotone"
-          dataKey="moodNum"
-          stroke="#FFA500"
-          strokeWidth={3}
-          dot={{ r: 6 }}
-          activeDot={{ r: 8 }}
-          animationDuration={900}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="bg-[#f9fafb] rounded-lg p-2">
+      <h3 className="text-sm mb-2">Mood Progress</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={moodData} className="lg:my-2 -ml-4 lg:-ml-4">
+          <CartesianGrid stroke="#ddd" strokeDasharray="4 4" />
+          <XAxis
+            dataKey="log_date"
+            tick={{ fontSize: 11, fill: "#666" }}
+            tickLine={false}
+            padding={{ left: 30, right: 0 }}
+          />
+          <YAxis
+            domain={[1, 3]}
+            ticks={[1, 2, 3]}
+            tickFormatter={(value) =>
+              moodReverseMapping[value].charAt(0).toUpperCase() +
+              moodReverseMapping[value].slice(1)
+            }
+            tick={{ fontSize: 11, fill: "#666" }}
+            tickLine={false}
+            axisLine={false}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Line
+            type="monotone"
+            dataKey="moodNum"
+            stroke="#FFA500"
+            strokeWidth={3}
+            dot={{ r: 6 }}
+            activeDot={{ r: 8 }}
+            animationDuration={900}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 
