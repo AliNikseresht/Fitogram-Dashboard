@@ -16,7 +16,7 @@ export const menuItems: MenuItem[] = [
   { label: "Nutrition", icon: <FaUtensils />, href: "/nutrition" },
   { label: "Progress", icon: <FaChartLine />, href: "/progress" },
   { label: "Plans", icon: <FaRegCalendarCheck />, href: "/plans" },
-  { label: "Coach Chat", icon: <FaComments />, href: "/chat" },
+  { label: "Coach", icon: <FaComments />, href: "/coach" },
   { label: "Library", icon: <FaBook />, href: "/library" },
   { label: "Settings", icon: <FaCog />, href: "/settings" },
 ];
