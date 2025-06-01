@@ -15,7 +15,8 @@ const SidebarMenu = ({ pathname, onLinkClick, role }: SidebarMenuProps) => (
   <div className="flex flex-col justify-between gap-5 h-full items-start w-full">
     <div className="flex flex-col mt-3 gap-1 w-full">
       {menuItems.map((item) => {
-        const fullHref = `/${role}s${item.href}`;
+        const suffix = role === "coach" ? "es" : "s";
+        const fullHref = `/${role}${suffix}${item.href}`;
         const isActive = pathname === fullHref || pathname.startsWith(fullHref);
 
         return (

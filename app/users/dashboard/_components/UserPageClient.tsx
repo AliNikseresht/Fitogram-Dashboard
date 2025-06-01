@@ -80,7 +80,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col p-3 lg:p-5 gap-6 w-full">
-      <div className="flex flex-col bg-[#fff] p-0 rounded-xl shadow">
+      <div className="flex flex-col bg-[#fff] rounded-xl shadow">
         <UserHeader />
         <UserGoalProgress progressPercent={70} />
         <UserSummaryCards sleep={sleepDuration} />
@@ -90,10 +90,13 @@ export default function DashboardPage() {
         <SleepLogForm userId={profile.id} />
         <CoachChat />
       </div>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 w-full">
-        <WeightChart profileId={profile.id} />
-        <WaterIntakeChart profileId={profile.id} />
-        <MoodChart profileId={profile.id} />
+      <div className="w-full bg-[#fff] shadow rounded-xl p-4">
+        <h3 className="text-base font-semibold mb-3">Progress Tracker</h3>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 w-full mb-3">
+          <WeightChart profileId={profile.id} />
+          <WaterIntakeChart profileId={profile.id} />
+          <MoodChart profileId={profile.id} />
+        </div>
         <SleepCard userId={profile.id} />
       </div>
 
