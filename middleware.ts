@@ -4,35 +4,64 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
+  const { pathname } = req.nextUrl;
+
+  const publicRoutes = ["/login", "/register", "/profile", "/verify-email"];
+  if (publicRoutes.includes(pathname)) return res;
 
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const { pathname } = req.nextUrl;
-
-  const publicRoutes = ["/login", "/register", "/profile", "/verify-email"];
-
-  if (publicRoutes.includes(pathname)) return res;
-
   if (!session || Date.now() >= (session.expires_at || 0) * 1000) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("height, weight, goal")
-    .eq("id", session.user.id)
-    .single();
+  const userId = session.user.id;
+  const userRole = session.user.user_metadata?.role;
+  let isProfileIncomplete = false;
+  let profileExists = false;
 
-  const isProfileIncomplete =
-    !profile || !profile.height || !profile.weight || !profile.goal;
+  if (userRole === "user") {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("height, weight, goal")
+      .eq("id", userId)
+      .single();
+
+    if (!profile) {
+      profileExists = false;
+    } else {
+      profileExists = true;
+      isProfileIncomplete = !profile.height || !profile.weight || !profile.goal;
+    }
+  }
+
+  if (userRole === "coach") {
+    const { data: coachProfile } = await supabase
+      .from("coaches")
+      .select("full_name, bio, specialization")
+      .eq("id", userId)
+      .single();
+
+    if (!coachProfile) {
+      profileExists = false;
+    } else {
+      profileExists = true;
+      isProfileIncomplete =
+        !coachProfile.full_name ||
+        !coachProfile.bio ||
+        !coachProfile.specialization;
+    }
+  }
+
+  if (!profileExists) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
 
   if (isProfileIncomplete && pathname !== "/profile") {
     return NextResponse.redirect(new URL("/profile", req.url));
   }
-
-  const userRole = session.user.user_metadata?.role;
 
   if (pathname.startsWith("/users/dashboard") && userRole !== "user") {
     return NextResponse.redirect(new URL("/coaches/dashboard", req.url));
@@ -43,10 +72,6 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname === "/") {
-    if (!session) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-
     if (userRole === "user") {
       return NextResponse.redirect(new URL("/users/dashboard", req.url));
     } else if (userRole === "coach") {

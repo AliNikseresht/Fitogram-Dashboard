@@ -3,9 +3,16 @@ import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 
+type Coach = {
+  id: string;
+  full_name: string;
+  specialization: string;
+  avatar_url: string | null;
+};
+
 const CoachSelectionPage = () => {
   const supabase = createClientComponentClient();
-  const [coaches, setCoaches] = useState<any[]>([]);
+  const [coaches, setCoaches] = useState<Coach[]>([]);
   const router = useRouter();
 
   useEffect(() => {
