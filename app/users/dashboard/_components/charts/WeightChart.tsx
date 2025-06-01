@@ -12,12 +12,7 @@ import {
 } from "recharts";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
-
-type WeightLog = {
-  id: string | number;
-  weight: number;
-  log_date: string;
-};
+import { WeightLog } from "@/types/ChartsType";
 
 const WeightChart = ({ profileId }: { profileId: string }) => {
   const { data, error } = useRealtimeTable<WeightLog>({
@@ -28,7 +23,15 @@ const WeightChart = ({ profileId }: { profileId: string }) => {
   });
 
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-  if (data.length === 0) return <CustomLoadingBars />;
+  if (!data) return <CustomLoadingBars />;
+  if (data.length === 0) {
+    return (
+      <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">
+        No data has been recorded yet. Please submit your first entry to see
+        progress.
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#f9fafb] rounded-lg p-2">

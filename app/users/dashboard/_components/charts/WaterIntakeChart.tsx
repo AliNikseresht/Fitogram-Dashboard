@@ -10,12 +10,7 @@ import {
 } from "recharts";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
-
-type WaterLog = {
-  id: string | number;
-  water_intake: number;
-  log_date: string;
-};
+import { WaterLog } from "@/types/ChartsType";
 
 const WaterIntakeChart = ({ profileId }: { profileId: string }) => {
   const { data, error } = useRealtimeTable<WaterLog>({
@@ -26,7 +21,15 @@ const WaterIntakeChart = ({ profileId }: { profileId: string }) => {
   });
 
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-  if (data.length === 0) return <CustomLoadingBars />;
+  if (!data) return <CustomLoadingBars />;
+  if (data.length === 0) {
+    return (
+      <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">
+        No data has been recorded yet. Please submit your first entry to see
+        progress.
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#f9fafb] rounded-lg p-2">

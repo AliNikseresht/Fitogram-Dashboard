@@ -20,8 +20,16 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
     orderBy: { column: "sleep_date", ascending: true },
   });
 
-  if (logs.length === 0) return <CustomLoadingBars />;
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;
+  if (!logs) return <CustomLoadingBars />;
+  if (logs.length === 0) {
+    return (
+      <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">
+        No data has been recorded yet. Please submit your first entry to see
+        progress.
+      </div>
+    );
+  }
 
   const filteredLogs = logs.slice(-filterDays);
 

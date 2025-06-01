@@ -11,14 +11,8 @@ import {
 } from "recharts";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
-
-type MoodType = "happy" | "neutral" | "sad";
-
-type LogType = {
-  id: string | number;
-  mood: MoodType;
-  log_date: string;
-};
+import CustomTooltipMoodChart from "./_components/CustomTooltipMoodChart";
+import { MoodLog, MoodType } from "@/types/ChartsType";
 
 const moodMapping: Record<MoodType, number> = {
   happy: 3,
@@ -33,7 +27,7 @@ const moodReverseMapping: Record<number, MoodType> = {
 };
 
 const MoodChart = ({ profileId }: { profileId: string }) => {
-  const { data, error } = useRealtimeTable<LogType>({
+  const { data, error } = useRealtimeTable<MoodLog>({
     table: "daily_logs",
     filterColumn: "profile_id",
     filterValue: profileId,
@@ -50,31 +44,15 @@ const MoodChart = ({ profileId }: { profileId: string }) => {
       })) || [];
 
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-  if (moodData.length === 0) return <CustomLoadingBars />;
-
-  const CustomTooltip = ({
-    active,
-    payload,
-  }: {
-    active?: boolean;
-    payload?: { value: number }[];
-  }) => {
-    if (active && payload && payload.length) {
-      const moodNum = payload[0].value;
-      const moodText = moodReverseMapping[moodNum];
-      return (
-        <div className="bg-white border border-gray-300 p-3 rounded-lg shadow-md text-sm">
-          <p>
-            Mood:{" "}
-            <strong>
-              {moodText.charAt(0).toUpperCase() + moodText.slice(1)}
-            </strong>
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+  if (!data) return <CustomLoadingBars />;
+  if (moodData.length === 0) {
+    return (
+      <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">
+        No data has been recorded yet. Please submit your first entry to see
+        progress.
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#f9fafb] rounded-lg p-2">
@@ -99,7 +77,7 @@ const MoodChart = ({ profileId }: { profileId: string }) => {
             tickLine={false}
             axisLine={false}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltipMoodChart />} />
           <Line
             type="monotone"
             dataKey="moodNum"
