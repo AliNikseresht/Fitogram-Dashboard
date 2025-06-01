@@ -11,13 +11,17 @@ type Props = {
 };
 
 const SleepCard: React.FC<Props> = ({ userId }) => {
+  const orderBy = React.useMemo(
+    () => ({ column: "sleep_date", ascending: true }),
+    []
+  );
   const [filterDays, setFilterDays] = useState(7);
 
   const { data: logs = [], error } = useRealtimeTable<SleepLog>({
     table: "sleep_logs",
     filterColumn: "user_id",
     filterValue: userId,
-    orderBy: { column: "sleep_date", ascending: true },
+    orderBy,
   });
 
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;

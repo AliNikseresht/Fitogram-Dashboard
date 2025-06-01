@@ -17,46 +17,33 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const userId = session.user.id;
   const userRole = session.user.user_metadata?.role;
+
   let isProfileIncomplete = false;
-  let profileExists = false;
 
   if (userRole === "user") {
     const { data: profile } = await supabase
       .from("profiles")
       .select("height, weight, goal")
-      .eq("id", userId)
+      .eq("id", session.user.id)
       .single();
 
-    if (!profile) {
-      profileExists = false;
-    } else {
-      profileExists = true;
-      isProfileIncomplete = !profile.height || !profile.weight || !profile.goal;
-    }
+    isProfileIncomplete =
+      !profile || !profile.height || !profile.weight || !profile.goal;
   }
 
   if (userRole === "coach") {
     const { data: coachProfile } = await supabase
       .from("coaches")
       .select("full_name, bio, specialization")
-      .eq("id", userId)
+      .eq("id", session.user.id)
       .single();
 
-    if (!coachProfile) {
-      profileExists = false;
-    } else {
-      profileExists = true;
-      isProfileIncomplete =
-        !coachProfile.full_name ||
-        !coachProfile.bio ||
-        !coachProfile.specialization;
-    }
-  }
-
-  if (!profileExists) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    isProfileIncomplete =
+      !coachProfile ||
+      !coachProfile.full_name ||
+      !coachProfile.bio ||
+      !coachProfile.specialization;
   }
 
   if (isProfileIncomplete && pathname !== "/profile") {

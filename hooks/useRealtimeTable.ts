@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 const supabase = createClientComponentClient();
 
@@ -23,9 +24,12 @@ export function useRealtimeTable<T extends HasIdAndDate>({
 }: SubscribeParams) {
   const [data, setData] = useState<T[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const channelRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(() => {
     if (!filterValue) return;
+
+    let isSubscribed = true;
 
     supabase
       .from(table)
@@ -34,8 +38,13 @@ export function useRealtimeTable<T extends HasIdAndDate>({
       .order(orderBy?.column || "id", { ascending: orderBy?.ascending ?? true })
       .then(({ data, error }) => {
         if (error) setError(error.message);
-        else setData(data || []);
+        else if (isSubscribed) setData(data || []);
       });
+
+    if (channelRef.current) {
+      channelRef.current.unsubscribe();
+      supabase.removeChannel(channelRef.current);
+    }
 
     const channel = supabase.channel(`public:${table}`);
 
@@ -62,10 +71,17 @@ export function useRealtimeTable<T extends HasIdAndDate>({
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
-      supabase.removeChannel(channel);
+      isSubscribed = false;
+      if (channelRef.current) {
+        channelRef.current.unsubscribe();
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
-  }, [table, filterColumn, filterValue, orderBy]);
+  }, [table, filterColumn, filterValue, orderBy?.column, orderBy?.ascending]);
 
   return { data, error };
 }
