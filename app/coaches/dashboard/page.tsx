@@ -4,19 +4,27 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-type Request = {
+interface Profile {
+  full_name: string;
+}
+
+interface CoachRequest {
   id: string;
   created_at: string;
   user_id: string;
-  profiles?: {
-    full_name?: string;
-  }[];
-};
+  profiles: Profile | null;
+}
 
-const supabase = createClientComponentClient();
+interface RawCoachRequest {
+  id: string;
+  created_at: string;
+  user_id: string;
+  profiles: Profile | Profile[] | null;
+}
 
 export default function CoachesPage() {
-  const [requests, setRequests] = useState<Request[]>([]);
+  const supabase = createClientComponentClient();
+  const [requests, setRequests] = useState<CoachRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,33 +34,36 @@ export default function CoachesPage() {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("coach_requests")
         .select(
           `
   id,
   created_at,
   user_id,
-  profiles!inner(full_name)
+  profiles(full_name)
 `
         )
-
         .eq("coach_id", user.id)
         .eq("status", "pending");
 
-      console.log(data);
+      console.log("req", JSON.stringify(data, null, 2));
 
-      if (error) {
-        toast.error("Failed to load requests.");
-      } else {
-        setRequests(data);
+      if (data) {
+        const fixedData = data.map((item: RawCoachRequest) => ({
+          ...item,
+          profiles: Array.isArray(item.profiles)
+            ? item.profiles[0]
+            : item.profiles,
+        }));
+        setRequests(fixedData);
       }
 
       setLoading(false);
     };
 
     fetchRequests();
-  }, []);
+  }, [supabase]);
 
   const handleDecision = async (
     requestId: string,
@@ -106,7 +117,7 @@ export default function CoachesPage() {
                   className="bg-gray-100 p-3 rounded-lg flex justify-between items-center"
                 >
                   <div>
-                    <p>{req.profiles?.[0]?.full_name ?? "Unknown User"}</p>
+                    <p>{req.profiles?.full_name ?? "Unknown User"}</p>
 
                     <p className="text-sm text-gray-500">
                       {new Date(req.created_at).toLocaleString()}
