@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 type Coach = {
   id: string;
@@ -31,11 +32,35 @@ const CoachSelectionPage = () => {
   }, [supabase]);
 
   const handleChooseCoach = async (coachId: string) => {
-    const { error } = await supabase
-      .from("profiles")
-      .update({ coach_id: coachId, status: "pending_coach_request" })
-      .eq("id", (await supabase.auth.getUser()).data.user?.id);
-    if (!error) router.push("/users/dashboard");
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      toast.error("User not authenticated");
+      return;
+    }
+console.log("User ID:", user.id);
+console.log("User from auth:", user);
+console.log("User ID to insert:", user.id);
+
+    const { error } = await supabase.from("coach_requests").insert([
+      {
+        coach_id: coachId,
+        user_id: user.id,
+        status: "pending",
+      },
+    ]);
+
+    if (error) {
+      toast.error("Failed to send request.");
+    } else {
+      toast.success(
+        "Your request has been sent successfully. After coach approval, it will show in your dashboard."
+      );
+      router.push("/users/dashboard");
+    }
   };
 
   return (
