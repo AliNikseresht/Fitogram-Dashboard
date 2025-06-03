@@ -1,7 +1,7 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CoachChatForCoach from "../_components/chat/CoachChatForCoach";
 
@@ -61,6 +61,24 @@ export default function CoachesPage() {
     toast.success(`Request ${status}.`);
     setRequests((prev) => prev.filter((r) => r.id !== requestId));
   };
+  const fetchStudents = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: studentData, error: studentError } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("coach_id", user.id);
+
+    if (studentError) {
+      toast.error("Failed to load students.");
+      return;
+    }
+
+    setStudents(studentData ?? []);
+  }, [supabase]);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -73,11 +91,11 @@ export default function CoachesPage() {
         .from("coach_requests")
         .select(
           `
-  id,
-  created_at,
-  user_id,
-  profiles(full_name)
-`
+        id,
+        created_at,
+        user_id,
+        profiles(full_name)
+      `
         )
         .eq("coach_id", user.id)
         .eq("status", "pending");
@@ -95,28 +113,9 @@ export default function CoachesPage() {
       setLoading(false);
     };
 
-    fetchRequests();
     fetchStudents();
-  }, [supabase]);
-
-  const fetchStudents = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data: studentData, error: studentError } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("coach_id", user.id);
-
-    if (studentError) {
-      toast.error("Failed to load students.");
-      return;
-    }
-
-    setStudents(studentData ?? []);
-  };
+    fetchRequests();
+  }, [supabase, fetchStudents]);
 
   return (
     <div className="p-6">

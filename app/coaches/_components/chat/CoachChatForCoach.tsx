@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { IoIosSend } from "react-icons/io";
 import { toast } from "react-toastify";
+import { RealtimeChannel } from "@supabase/supabase-js";
+import Image from "next/image";
 
 interface Student {
   id: string;
@@ -21,13 +23,17 @@ interface Message {
 
 const CoachChatForCoach = () => {
   const supabase = createClientComponentClient();
-
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [sending, setSending] = useState(false);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -58,7 +64,10 @@ const CoachChatForCoach = () => {
       setMessages([]);
       return;
     }
-    const fetchMessages = async () => {
+
+    let channel: RealtimeChannel;
+
+    const fetchMessagesAndSubscribe = async () => {
       setLoadingMessages(true);
 
       const {
@@ -81,10 +90,44 @@ const CoachChatForCoach = () => {
         setMessages(data ?? []);
       }
       setLoadingMessages(false);
+
+      // Subscribe to real-time updates
+      channel = supabase
+        .channel("coach-chat")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+          },
+          (payload) => {
+            const newMsg = payload.new as Message;
+
+            const isBetweenCoachAndStudent =
+              (newMsg.sender_id === user.id &&
+                newMsg.receiver_id === selectedStudent.id) ||
+              (newMsg.sender_id === selectedStudent.id &&
+                newMsg.receiver_id === user.id);
+
+            if (isBetweenCoachAndStudent) {
+              setMessages((prev) => [...prev, newMsg]);
+            }
+          }
+        )
+        .subscribe();
     };
 
-    fetchMessages();
+    fetchMessagesAndSubscribe();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
   }, [selectedStudent, supabase]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!messageText.trim() || !selectedStudent) return;
@@ -105,16 +148,6 @@ const CoachChatForCoach = () => {
     if (error) {
       console.error("Failed to send message", error);
     } else {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          sender_id: user.id,
-          receiver_id: selectedStudent.id,
-          content: messageText.trim(),
-          created_at: new Date().toISOString(),
-        },
-      ]);
       setMessageText("");
     }
 
@@ -122,28 +155,31 @@ const CoachChatForCoach = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 w-full max-w-lg flex flex-col h-[400px]">
+    <div className="bg-[#fff] p-4 rounded-xl w-full flex flex-col h-full shadow-xl">
       <h3 className="font-bold mb-4">Coach Chat</h3>
 
       <div className="flex flex-1 gap-4 overflow-hidden">
-        {/* لیست شاگردها */}
-        <div className="w-40 border-r border-gray-300 overflow-y-auto">
+        <div className="w-44 border-r border-[#bababa] overflow-y-auto pr-2">
           {students.length === 0 && <p>No students found.</p>}
           <ul>
             {students.map((student) => (
               <li
                 key={student.id}
-                className={`p-2 cursor-pointer rounded ${
-                  selectedStudent?.id === student.id
-                    ? "bg-blue-100 font-semibold"
-                    : "hover:bg-gray-100"
-                }`}
+                className="py-1 cursor-pointer border-b border-[#bababa]"
                 onClick={() => setSelectedStudent(student)}
               >
-                <img
-                  src={student.avatar_url || "/default-avatar.png"}
+                <Image
+                  src={
+                    student.avatar_url?.startsWith("http")
+                      ? student.avatar_url
+                      : student.avatar_url
+                      ? `/avatars/${student.avatar_url}`
+                      : "/default-avatar.png"
+                  }
                   alt={student.full_name}
-                  className="w-8 h-8 rounded-full inline-block mr-2 object-cover"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 rounded-full inline-block mr-2 object-cover border-2 border-[#bababa]"
                 />
                 {student.full_name}
               </li>
@@ -151,8 +187,7 @@ const CoachChatForCoach = () => {
           </ul>
         </div>
 
-        {/* بخش پیام‌ها */}
-        <div className="flex flex-col flex-1 h-full">
+        <div className="flex flex-col flex-1 gap-2 h-full">
           {!selectedStudent ? (
             <div className="flex items-center justify-center h-full text-gray-500">
               Select a student to chat
@@ -163,7 +198,7 @@ const CoachChatForCoach = () => {
             </div>
           ) : (
             <>
-              <div className="flex-1 overflow-y-auto p-2 border rounded bg-gray-50">
+              <div className="overflow-y-auto w-full max-w-sm bg-white p-4 rounded-xl space-y-4 flex flex-col justify-between h-64">
                 {messages.length === 0 && (
                   <p className="text-gray-400 text-sm">
                     No messages yet. Start the conversation!
@@ -184,13 +219,14 @@ const CoachChatForCoach = () => {
                     </div>
                   </div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
 
-              <div className="mt-2 flex gap-2">
+              <div className="flex gap-2 items-center">
                 <input
                   type="text"
-                  className="flex-1 border rounded px-3 py-2 text-sm"
                   placeholder="Type your message..."
+                  className="w-full bg-[#f3f4f6] rounded-s-lg px-3 py-2 text-sm focus:outline-none"
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
                   onKeyDown={(e) => {
@@ -200,10 +236,10 @@ const CoachChatForCoach = () => {
                 />
                 <button
                   onClick={handleSendMessage}
-                  className="bg-blue-600 p-2 rounded text-white flex items-center justify-center disabled:opacity-50"
+                  className="bg-[#0284c7] p-[0.4em] rounded-r-lg cursor-pointer disabled:opacity-50 flex items-center justify-center"
                   disabled={sending}
                 >
-                  <IoIosSend size={20} />
+                  <IoIosSend color="#fff" size={23} />
                 </button>
               </div>
             </>

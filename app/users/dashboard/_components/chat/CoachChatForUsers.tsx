@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { IoIosSend } from "react-icons/io";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 interface Message {
   id: string;
@@ -18,78 +19,12 @@ interface Message {
 
 const CoachChatForUsers = () => {
   const supabase = createClientComponentClient();
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const { profile, loading, error } = useUserProfile();
-
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [sending, setSending] = useState(false);
-
-  useEffect(() => {
-    if (!profile || !profile.coach) {
-      setMessages([]);
-      return;
-    }
-
-    const fetchMessages = async () => {
-      setLoadingMessages(true);
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("messages")
-        .select("*")
-        .or(
-          `and(sender_id.eq.${user.id},receiver_id.eq.${
-            profile.coach!.id
-          }),and(sender_id.eq.${profile.coach!.id},receiver_id.eq.${user.id})`
-        )
-        .order("created_at", { ascending: true });
-
-      if (error) {
-        console.error("Failed to load messages", error?.message || error);
-        setMessages([]);
-      } else {
-        setMessages(data ?? []);
-      }
-      setLoadingMessages(false);
-    };
-
-    fetchMessages();
-
-    // ثبت subscription برای دریافت پیام‌های جدید realtime
-    supabase
-      .channel("public:messages")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `or(and(sender_id.eq.${
-            profile.coach!.id
-          },receiver_id.eq.${supabase.auth
-            .getUser()
-            .then(
-              ({ data: { user } }) => user?.id
-            )}),and(sender_id.eq.${supabase.auth
-            .getUser()
-            .then(({ data: { user } }) => user?.id)},receiver_id.eq.${
-            profile.coach!.id
-          }))`,
-        },
-        (payload) => {
-          setMessages((prev) => [...prev, payload.new as Message]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeAllChannels();
-    };
-  }, [profile, supabase]);
 
   const handleSendMessage = async () => {
     if (!messageText.trim() || !profile?.coach) return;
@@ -111,21 +46,82 @@ const CoachChatForUsers = () => {
       console.error("Failed to send message", error);
       toast.error("Failed to send message");
     } else {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          sender_id: user.id,
-          receiver_id: profile.coach?.id ?? "",
-          content: messageText.trim(),
-          created_at: new Date().toISOString(),
-        },
-      ]);
       setMessageText("");
     }
 
     setSending(false);
   };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    if (!profile || !profile.coach) {
+      setMessages([]);
+      return;
+    }
+
+    const setupRealtime = async () => {
+      setLoadingMessages(true);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .or(
+          `and(sender_id.eq.${user.id},receiver_id.eq.${profile?.coach?.id}),and(sender_id.eq.${profile?.coach?.id},receiver_id.eq.${user.id})`
+        )
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Failed to load messages", error.message || error);
+        setMessages([]);
+      } else {
+        setMessages(data ?? []);
+      }
+
+      // ✅ Realtime setup
+      const channel = supabase
+        .channel("chat-room")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+          },
+          (payload) => {
+            const newMessage = payload.new as Message;
+            const isRelevant =
+              (newMessage.sender_id === user.id &&
+                newMessage.receiver_id === profile?.coach?.id) ||
+              (newMessage.sender_id === profile?.coach?.id &&
+                newMessage.receiver_id === user.id);
+
+            if (isRelevant) {
+              setMessages((prev) => [...prev, newMessage]);
+            }
+          }
+        )
+        .subscribe();
+
+      setLoadingMessages(false);
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    };
+
+    setupRealtime();
+  }, [profile]);
 
   if (loading) return <CustomLoadingBars />;
   if (error) return <div className="text-red-500">Error: {error}</div>;
@@ -133,15 +129,18 @@ const CoachChatForUsers = () => {
     return <div className="text-red-500">No profile data found.</div>;
 
   return (
-    <div className="bg-[#fff] p-4 rounded-xl w-full max-w-sm flex flex-col h-full">
+    <div className="bg-[#fff] p-4 rounded-xl w-full max-w-sm flex flex-col h-full shadow-lg">
       <p className="mb-4 font-bold">Coach Chat</p>
       {profile.coach ? (
         <div className="space-y-3 flex flex-col h-full">
           <div className="flex gap-2 items-center">
-            <img
+            <Image
               src={profile.coach.avatar_url || "/default-avatar.png"}
               alt={profile.coach.full_name}
               className="w-12 h-12 rounded-full object-cover border-2 border-[#bababa]"
+              width={50}
+              height={50}
+              priority
             />
             <div className="flex flex-col">
               <p className="font-medium text-sm">{profile.coach.full_name}</p>
@@ -151,7 +150,7 @@ const CoachChatForUsers = () => {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto rounded p-2 bg-[#f9fbfb] mb-2">
+          <div className="overflow-y-auto w-full max-w-sm bg-white p-4 rounded-xl shadow-md space-y-4 flex flex-col justify-between h-64">
             {loadingMessages ? (
               <p>Loading messages...</p>
             ) : messages.length === 0 ? (
@@ -173,6 +172,7 @@ const CoachChatForUsers = () => {
                 </div>
               ))
             )}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="flex gap-2 items-center">
