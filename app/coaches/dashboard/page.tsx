@@ -1,8 +1,9 @@
 "use client";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import CoachChatForCoach from "../_components/chat/CoachChatForCoach";
 
 interface Profile {
   full_name: string;
@@ -26,44 +27,7 @@ export default function CoachesPage() {
   const supabase = createClientComponentClient();
   const [requests, setRequests] = useState<CoachRequest[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchRequests = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data } = await supabase
-        .from("coach_requests")
-        .select(
-          `
-  id,
-  created_at,
-  user_id,
-  profiles(full_name)
-`
-        )
-        .eq("coach_id", user.id)
-        .eq("status", "pending");
-
-      console.log("req", JSON.stringify(data, null, 2));
-
-      if (data) {
-        const fixedData = data.map((item: RawCoachRequest) => ({
-          ...item,
-          profiles: Array.isArray(item.profiles)
-            ? item.profiles[0]
-            : item.profiles,
-        }));
-        setRequests(fixedData);
-      }
-
-      setLoading(false);
-    };
-
-    fetchRequests();
-  }, [supabase]);
+  const [students, setStudents] = useState<Profile[]>([]);
 
   const handleDecision = async (
     requestId: string,
@@ -97,13 +61,82 @@ export default function CoachesPage() {
     toast.success(`Request ${status}.`);
     setRequests((prev) => prev.filter((r) => r.id !== requestId));
   };
+  const fetchStudents = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: studentData, error: studentError } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("coach_id", user.id);
+
+    if (studentError) {
+      toast.error("Failed to load students.");
+      return;
+    }
+
+    setStudents(studentData ?? []);
+  }, [supabase]);
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("coach_requests")
+        .select(
+          `
+        id,
+        created_at,
+        user_id,
+        profiles(full_name)
+      `
+        )
+        .eq("coach_id", user.id)
+        .eq("status", "pending");
+
+      if (data) {
+        const fixedData = data.map((item: RawCoachRequest) => ({
+          ...item,
+          profiles: Array.isArray(item.profiles)
+            ? item.profiles[0]
+            : item.profiles,
+        }));
+        setRequests(fixedData);
+      }
+
+      setLoading(false);
+    };
+
+    fetchStudents();
+    fetchRequests();
+  }, [supabase, fetchStudents]);
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">🏋️ Coach Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card title="My Users">List of users with click functionality</Card>
+        <Card title="My Users">
+          {students.length === 0 ? (
+            <p>No students yet.</p>
+          ) : (
+            <ul className="space-y-2">
+              {students.map((student, index) => (
+                <li key={index} className="bg-gray-100 p-2 rounded">
+                  {student.full_name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+        <CoachChatForCoach />
+
         <Card title="Requests">
           {loading ? (
             <p>Loading...</p>

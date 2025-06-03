@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { UserProfile } from "@/types/UserProfile";
+import { SupabaseProfile } from "@/types/UserProfile";
 
 export function useUserProfile() {
   const supabase = createClientComponentClient();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<SupabaseProfile | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,51 +33,48 @@ export function useUserProfile() {
       .from("profiles")
       .select(
         `
-        id,
-        full_name,
-        role,
-        height,
-        weight,
-        goal,
-        avatar_url,
-        body_fat_percent,
-        muscle_mass,
-        birth_date,
-        created_at,
-        updated_at,
-        workout_program_id,
-        nutrition_program_id,
-        status,
-        last_login,
-        preferences,
-    coach:coach_id (
     id,
     full_name,
-    avatar_url
-  )
-      `
+    role,
+    height,
+    weight,
+    goal,
+    avatar_url,
+    body_fat_percent,
+    muscle_mass,
+    birth_date,
+    created_at,
+    updated_at,
+    workout_program_id,
+    nutrition_program_id,
+    status,
+    last_login,
+    preferences,
+    coach:coach_id (
+      id,
+      full_name,
+      avatar_url
+    )
+  `
       )
       .eq("id", user.id)
-      .maybeSingle();
+      .maybeSingle<SupabaseProfile>();
 
     if (error) {
       setError(error.message);
       setLoading(false);
       return;
     }
+    console.log("Coach data from Supabase:", profileData?.coach);
 
-    // Fix coach field: convert from array to single object or null
-    const mappedProfile: UserProfile | null = profileData
+    const mappedProfile: SupabaseProfile | null = profileData
       ? {
           ...profileData,
-          coach:
-            Array.isArray(profileData.coach) && profileData.coach.length > 0
-              ? profileData.coach[0]
-              : null,
+          coach: profileData.coach ?? null,
         }
       : null;
 
-    const finalProfile: UserProfile = mappedProfile ?? {
+    const finalProfile: SupabaseProfile = mappedProfile ?? {
       id: user.id,
       full_name: (user.user_metadata.full_name as string) || "",
       role: (user.user_metadata.role as "user" | "coach") || "user",
@@ -93,7 +90,7 @@ export function useUserProfile() {
       updated_at: new Date().toISOString(),
       workout_program_id: null,
       nutrition_program_id: null,
-      status: "active",
+      status: "online",
       last_login: null,
       preferences: null,
     };

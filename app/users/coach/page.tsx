@@ -41,9 +41,6 @@ const CoachSelectionPage = () => {
       toast.error("User not authenticated");
       return;
     }
-console.log("User ID:", user.id);
-console.log("User from auth:", user);
-console.log("User ID to insert:", user.id);
 
     const { error } = await supabase.from("coach_requests").insert([
       {

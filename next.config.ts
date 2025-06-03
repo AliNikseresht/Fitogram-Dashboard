@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
     domains: ["btrohbxtyfzgeioyonez.supabase.co"],
   },
   reactStrictMode: true,
-  swcMinify: true,
   experimental: {
     serverActions: {
       bodySizeLimit: "1mb",
