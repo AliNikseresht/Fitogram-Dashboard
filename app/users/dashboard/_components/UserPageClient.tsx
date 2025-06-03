@@ -12,7 +12,7 @@ import DailyLogForm from "./DailyLogForm/DailyLogForm";
 import WeightChart from "./charts/WeightChart";
 import WaterIntakeChart from "./charts/WaterIntakeChart";
 import MoodChart from "./charts/MoodChart";
-import CoachChat from "./chat/CoachChat";
+import CoachChatForUsers from "./chat/CoachChatForUsers";
 import SleepLogForm from "./SleepLogForm/SleepLogForm";
 import SleepCard from "./SleepLogForm/SleepCard";
 import fetchSleepLogs from "@/services/fetchSleepLogs";
@@ -88,7 +88,7 @@ export default function DashboardPage() {
       <div className="flex justify-between w-full flex-col lg:flex-row">
         <DailyLogForm profileId={profile.id} />
         <SleepLogForm userId={profile.id} />
-        <CoachChat />
+        <CoachChatForUsers />
       </div>
       <div className="w-full bg-[#fff] shadow rounded-xl p-4">
         <h3 className="text-base font-semibold mb-3">Progress Tracker</h3>

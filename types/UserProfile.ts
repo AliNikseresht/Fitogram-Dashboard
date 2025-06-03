@@ -1,4 +1,10 @@
-export interface UserProfile {
+export interface SupabaseCoach {
+  id: string;
+  full_name: string;
+  avatar_url?: string | null;
+}
+
+export interface SupabaseProfile {
   id: string;
   full_name: string;
   role: "user" | "coach";
@@ -6,7 +12,6 @@ export interface UserProfile {
   weight: number | null;
   goal: string | null;
   avatar_url?: string | null;
-  coach?: { id: string; full_name: string } | null;
   body_fat_percent?: number | null;
   muscle_mass?: number | null;
   birth_date?: string | null;
@@ -17,4 +22,5 @@ export interface UserProfile {
   status?: string | null;
   last_login?: string | null;
   preferences?: Record<string, any> | null;
+  coach?: SupabaseCoach | null;
 }
