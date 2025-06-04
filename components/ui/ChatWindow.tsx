@@ -49,6 +49,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           src={otherUserAvatar}
           alt={otherUserName}
           className="w-12 h-12 rounded-full object-cover border-2 border-gray-300"
+          width={48}
+          height={48}
+          priority
         />
         <p className="font-semibold">{otherUserName}</p>
       </div>
@@ -75,6 +78,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
                     src={isMyMessage ? otherUserAvatar : otherUserAvatar}
                     alt={isMyMessage ? "You" : otherUserName}
                     className="border-2 border-[#212121]"
+                    width={48}
+                    height={48}
+                    priority
                   />
                 </div>
               </div>

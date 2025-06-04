@@ -5,6 +5,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
 import ChatWindow from "@/components/ui/ChatWindow";
 import Image from "next/image";
+import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 
 interface Student {
   id: string;
@@ -45,19 +46,19 @@ const CoachChatForCoach = () => {
     fetchStudents();
   }, [userId, supabase]);
 
-  if (!userId) return <p>Loading user...</p>;
+  if (!userId) return <CustomLoadingBars />;
 
   return (
-    <div className="flex h-full">
-      <div className="w-44 border-r border-gray-300 overflow-y-auto p-2">
+    <div className="flex w-full justify-between h-full bg-[#fff] p-4 rounded-xl shadow-md">
+      <div className="w-auto overflow-y-auto p-2">
         {students.length === 0 && <p>No students found.</p>}
-        <ul>
+        <ul className="flex items-center gap-2">
           {students.map((student) => (
             <li
               key={student.id}
-              className={`p-2 cursor-pointer ${
+              className={`flex items-center gap-1 p-2 rounded-lg text-sm transition hover:bg-[#e1f1fe] cursor-pointer ${
                 selectedStudent?.id === student.id
-                  ? "bg-blue-200 font-bold"
+                  ? "bg-blue-100 text-[#0369a1] font-bold"
                   : ""
               }`}
               onClick={() => setSelectedStudent(student)}
@@ -71,7 +72,10 @@ const CoachChatForCoach = () => {
                     : "/default-avatar.png"
                 }
                 alt={student.full_name}
-                className="w-10 h-10 rounded-full inline-block mr-2 object-cover border-2 border-gray-300"
+                className="w-10 h-10 rounded-full inline-block mr-2 object-cover border-2 border-[#bababa]"
+                width={48}
+                height={48}
+                priority
               />
               {student.full_name}
             </li>
