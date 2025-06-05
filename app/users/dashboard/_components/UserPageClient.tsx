@@ -78,7 +78,7 @@ export default function DashboardPage() {
       textColor: "text-yellow-800",
     },
   ];
-  
+
   return (
     <div className="flex flex-col p-3 lg:p-5 gap-6 w-full">
       <div className="flex flex-col bg-[#fff] rounded-xl shadow">
@@ -86,10 +86,10 @@ export default function DashboardPage() {
         <UserGoalProgress progressPercent={70} />
         <UserSummaryCards sleep={sleepDuration} />
       </div>
-      <AiAssistantChat userId={profile.id} />
-      <div className="flex justify-between w-full flex-col lg:flex-row gap-4 lg:gap-0">
+      <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-2">
         <DailyLogForm profileId={profile.id} />
         <SleepLogForm userId={profile.id} />
+        <AiAssistantChat userId={profile.id} />
         <CoachChatForUsers />
       </div>
       <div className="w-full bg-[#fff] shadow rounded-xl p-4">
