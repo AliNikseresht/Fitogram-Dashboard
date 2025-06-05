@@ -43,7 +43,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full w-full max-w-sm bg-[#fff] p-4 rounded-xl shadow-lg">
+    <div className="flex flex-col h-full w-full max-w-sm bg-[#fff] p-4 rounded-xl shadow-md">
+      <h2 className="text-xl mb-3 font-bold flex items-center gap-2">
+        Coach Chat
+      </h2>
       <div className="flex items-center gap-2 mb-4 border-b py-2.5 border-[#bababa]">
         <Image
           src={otherUserAvatar}

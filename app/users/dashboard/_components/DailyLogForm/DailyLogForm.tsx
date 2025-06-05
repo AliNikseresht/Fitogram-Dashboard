@@ -77,7 +77,7 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full max-w-sm bg-[#fff] p-4 rounded-xl shadow-md space-y-4"
+      className="w-full max-w-sm bg-[#fff] p-4 rounded-xl shadow-md flex flex-col justify-between"
     >
       <h2 className="font-semibold">Daily Log</h2>
 
@@ -115,7 +115,7 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#0284c7] text-white py-2 rounded cursor-pointer disabled:opacity-50 hover:bg-[#027bc7] duration-200"
+        className="w-full bg-[#0284c7] text-[#fff] py-2 rounded cursor-pointer disabled:opacity-50 hover:bg-[#027bc7] duration-200"
       >
         {loading ? <CustomLoadingSpinner /> : "Save Log"}
       </button>
