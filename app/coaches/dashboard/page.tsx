@@ -119,7 +119,7 @@ export default function CoachesPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">🏋️ Coach Dashboard</h1>
+      <h2 className="text-2xl font-bold mb-4">🏋️ Coach Dashboard</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card title="My Users">
@@ -190,7 +190,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md">
+    <div className="bg-[#fff] p-4 rounded-xl shadow-md">
       <h2 className="text-lg font-semibold mb-2">{title}</h2>
       <div>{children}</div>
     </div>

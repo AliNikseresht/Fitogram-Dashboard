@@ -85,7 +85,7 @@ export default function DashboardPage() {
         <UserGoalProgress progressPercent={70} />
         <UserSummaryCards sleep={sleepDuration} />
       </div>
-      <div className="flex justify-between w-full flex-col lg:flex-row">
+      <div className="flex justify-between w-full flex-col lg:flex-row gap-4 lg:gap-0">
         <DailyLogForm profileId={profile.id} />
         <SleepLogForm userId={profile.id} />
         <CoachChatForUsers />
