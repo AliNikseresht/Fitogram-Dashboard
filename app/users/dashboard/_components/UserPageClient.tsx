@@ -19,6 +19,7 @@ import fetchSleepLogs from "@/services/fetchSleepLogs";
 import formatDurationHoursMinutes from "@/functions/formatDuration";
 import { QuickLink } from "@/types/QuickLinksTypes";
 import ProgramCard from "./ProgramCard";
+import AiAssistantChat from "./chat/AiAssistantChat";
 
 export default function DashboardPage() {
   const { profile, loading, error } = useUserProfile();
@@ -77,7 +78,7 @@ export default function DashboardPage() {
       textColor: "text-yellow-800",
     },
   ];
-
+  
   return (
     <div className="flex flex-col p-3 lg:p-5 gap-6 w-full">
       <div className="flex flex-col bg-[#fff] rounded-xl shadow">
@@ -85,6 +86,7 @@ export default function DashboardPage() {
         <UserGoalProgress progressPercent={70} />
         <UserSummaryCards sleep={sleepDuration} />
       </div>
+      <AiAssistantChat userId={profile.id} />
       <div className="flex justify-between w-full flex-col lg:flex-row gap-4 lg:gap-0">
         <DailyLogForm profileId={profile.id} />
         <SleepLogForm userId={profile.id} />
