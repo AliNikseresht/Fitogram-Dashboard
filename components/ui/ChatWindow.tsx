@@ -2,6 +2,7 @@ import { useChat } from "@/hooks/useChat";
 import Image from "next/image";
 import React, { useRef, useState, useEffect } from "react";
 import { IoIosSend } from "react-icons/io";
+import ChatMessagesSkeleton from "./loadings/ChatMessagesSkeleton";
 
 interface ChatWindowProps {
   userId: string;
@@ -62,7 +63,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         className="flex-1 overflow-y-auto mb-4 space-y-2"
         style={{ maxHeight: "16rem" }}
       >
-        {loadingMessages && <p>Loading messages...</p>}
+        {loadingMessages && <ChatMessagesSkeleton />}
+
         {!loadingMessages && messages.length === 0 && (
           <p className="text-gray-500">No messages yet.</p>
         )}

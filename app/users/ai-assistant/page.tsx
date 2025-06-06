@@ -6,10 +6,13 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 
 const AiAssistantPage = () => {
-  const { profile, loading, error } = useUserProfile();
+  const { data: profile, isLoading, error } = useUserProfile();
 
-  if (loading) return <CustomLoadingBars />;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (isLoading) return <CustomLoadingBars />;
+  if (error)
+    return (
+      <div className="text-red-500"> Error: {(error as Error).message}</div>
+    );
   if (!profile)
     return <div className="text-red-500">No profile data found.</div>;
 

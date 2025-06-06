@@ -22,8 +22,9 @@ export function useRealtimeTable<T extends HasIdAndDate>({
   filterValue,
   orderBy,
 }: SubscribeParams) {
-  const [data, setData] = useState<T[]>([]);
+  const [data, setData] = useState<T[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const channelRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(() => {
@@ -37,8 +38,13 @@ export function useRealtimeTable<T extends HasIdAndDate>({
       .eq(filterColumn, filterValue)
       .order(orderBy?.column || "id", { ascending: orderBy?.ascending ?? true })
       .then(({ data, error }) => {
-        if (error) setError(error.message);
-        else if (isSubscribed) setData(data || []);
+        if (error) {
+          setError(error.message);
+          setIsLoading(false);
+        } else if (isSubscribed) {
+          setData(data || []);
+          setIsLoading(false);
+        }
       });
 
     if (channelRef.current) {
@@ -60,7 +66,8 @@ export function useRealtimeTable<T extends HasIdAndDate>({
         (payload) => {
           const newItem = payload.new as T;
           setData((prev) => {
-            const updated = prev.filter((item) => item.id !== newItem.id);
+            const prevData = prev || [];
+            const updated = prevData.filter((item) => item.id !== newItem.id);
             return [...updated, newItem].sort(
               (a, b) =>
                 new Date(a[orderBy?.column || "id"]).getTime() -
@@ -75,6 +82,7 @@ export function useRealtimeTable<T extends HasIdAndDate>({
 
     return () => {
       isSubscribed = false;
+      setIsLoading(false);
       if (channelRef.current) {
         channelRef.current.unsubscribe();
         supabase.removeChannel(channelRef.current);
@@ -83,5 +91,5 @@ export function useRealtimeTable<T extends HasIdAndDate>({
     };
   }, [table, filterColumn, filterValue, orderBy?.column, orderBy?.ascending]);
 
-  return { data, error };
+  return { data, error, isLoading };
 }

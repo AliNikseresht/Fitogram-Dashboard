@@ -69,58 +69,62 @@ export default function AiAssistantChat({ userId }: { userId: string }) {
   };
 
   return (
-    <div className="w-full p-4 bg-[#fff] rounded-xl shadow-md flex flex-col h-full">
-      <h2 className="text-xl mb-3 font-bold flex items-center gap-2">
+    <div className="flex flex-col h-screen w-full bg-white p-0 lg:p-4">
+      <h2 className="text-xl mb-3 font-bold hidden lg:flex items-center gap-2">
         🤖 AI Assistant Chat
       </h2>
 
       <div
         ref={messagesEndRef}
-        className="flex-1 overflow-y-auto mb-3 space-y-4 px-2 py-4 border border-[#bababa] rounded-2xl max-h-[500px] scroll-smooth scrollbar-thin scrollbar-thumb-blue-300"
+        className="flex flex-col gap-4 flex-grow overflow-y-auto lg:mb-4 px-2 py-4 lg:border border-gray-300 rounded-2xl"
       >
-        {messages.length === 0 && (
+        {messages.length === 0 ? (
           <p className="text-gray-500 text-center">Start the conversation!</p>
-        )}
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${
-              msg.from === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
+        ) : (
+          messages.map((msg, i) => (
             <div
-              className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm leading-relaxed shadow-md ${
-                msg.from === "user"
-                  ? "bg-gradient-to-br from-[#0369a1] to-[#0284c7] text-[#fff] rounded-br-none"
-                  : "bg-gray-100 text-gray-900 rounded-bl-none"
+              key={i}
+              className={`flex ${
+                msg.from === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {msg.text}
+              <div
+                className={`px-4 py-2 rounded-2xl text-sm leading-relaxed shadow-md
+                max-w-[80%] sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%]
+                ${
+                  msg.from === "user"
+                    ? "bg-gradient-to-br from-[#0369a1] to-[#0284c7] text-white rounded-br-none"
+                    : "bg-gray-100 text-gray-900 rounded-bl-none"
+                }`}
+              >
+                {msg.text}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
-      <div className="w-full bg-gray-100 rounded-3xl flex flex-col p-2 shadow-md">
+      <div className="w-full bg-gray-100 lg:rounded-3xl flex flex-col shadow-md p-1">
         <textarea
-          rows={3}
+          rows={2}
           placeholder="Ask anything"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={onKeyDown}
           disabled={loading}
-          className="resize-none w-full p-3 focus:outline-none rounded-3xl"
+          className="resize-none w-full p-3 focus:outline-none rounded-3xl text-sm sm:text-base"
         />
 
         <div className="flex items-center gap-1.5 justify-end w-full">
-          <CiMicrophoneOn size={25} />
+          <CiMicrophoneOn size={26} />
           <button
             onClick={handleSend}
             disabled={loading || !message.trim()}
-            className={` bg-[#0284c7] p-2 flex justify-center items-center rounded-full cursor-pointer disabled:opacity-50 duration-200 ${
+            className={`p-2 flex justify-center items-center rounded-full cursor-pointer disabled:opacity-50 duration-200
+            ${
               loading || !message.trim()
-                ? "bg-[#fff] cursor-not-allowed"
-                : "bg-[#0284c7] hover:bg-[#027bc7] active:bg-[#0268c7] text-[#fff]"
+                ? "bg-white cursor-not-allowed"
+                : "bg-[#0284c7] hover:bg-[#027bc7] active:bg-[#0268c7] text-white"
             }`}
             aria-label="Send message"
           >
@@ -128,7 +132,7 @@ export default function AiAssistantChat({ userId }: { userId: string }) {
               <>
                 Thinking...
                 <svg
-                  className="animate-spin h-5 w-5"
+                  className="animate-spin h-5 w-5 ml-2"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -150,9 +154,7 @@ export default function AiAssistantChat({ userId }: { userId: string }) {
                 </svg>
               </>
             ) : (
-              <>
-                <FaArrowUp size={20} />
-              </>
+              <FaArrowUp size={22} />
             )}
           </button>
         </div>

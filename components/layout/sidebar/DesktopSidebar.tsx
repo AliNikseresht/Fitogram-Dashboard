@@ -10,9 +10,9 @@ interface DesktopSidebarProps {
 }
 
 const DesktopSidebar = ({ pathname, onCloseMobile }: DesktopSidebarProps) => {
-  const { profile, loading } = useUserProfile();
+  const { data: profile, isLoading } = useUserProfile();
 
-  if (loading || !profile) return null;
+  if (isLoading || !profile) return null;
 
   return (
     <div className="hidden lg:flex flex-col h-full items-start p-5 bg-[#fff] shadow-inner w-full">

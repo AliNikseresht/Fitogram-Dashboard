@@ -13,6 +13,7 @@ type Props = {
 
 const SleepLogForm: React.FC<Props> = ({ userId }) => {
   const supabase = createClientComponentClient();
+  const [loading, setLoading] = React.useState(false);
 
   const {
     control,
@@ -29,8 +30,6 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
       wakeMinute: "00",
     },
   });
-
-  const [loading, setLoading] = React.useState(false);
 
   const qualityValue = watch("quality");
 
