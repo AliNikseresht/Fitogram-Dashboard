@@ -75,7 +75,6 @@ const CoachChatForCoach = () => {
                 className="w-10 h-10 rounded-full inline-block mr-2 object-cover border-2 border-[#bababa]"
                 width={48}
                 height={48}
-                priority
               />
               {student.full_name}
             </li>

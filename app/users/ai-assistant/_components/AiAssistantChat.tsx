@@ -91,7 +91,7 @@ export default function AiAssistantChat({ userId }: { userId: string }) {
             <div
               className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm leading-relaxed shadow-md ${
                 msg.from === "user"
-                  ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-none"
+                  ? "bg-gradient-to-br from-[#0369a1] to-[#0284c7] text-[#fff] rounded-br-none"
                   : "bg-gray-100 text-gray-900 rounded-bl-none"
               }`}
             >

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import AiAssistantChat from "../dashboard/_components/chat/AiAssistantChat";
+import AiAssistantChat from "./_components/AiAssistantChat";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 

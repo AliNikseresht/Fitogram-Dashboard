@@ -22,7 +22,6 @@ export const Avatar = ({
         src={avatarUrl}
         alt={`${fullName} avatar`}
         className="w-full h-full object-cover"
-        priority
         width={500}
         height={500}
       />

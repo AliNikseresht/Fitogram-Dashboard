@@ -11,7 +11,10 @@ interface SummaryCardProps {
 }
 
 const SummaryCard = ({ icon, label, value, iconColor }: SummaryCardProps) => (
-  <div className="bg-[#f3f8fd] p-4 rounded-lg shadow-sm flex flex-col items-center justify-center">
+  <div
+    aria-label={`${label}: ${value}`}
+    className="bg-[#f3f8fd] p-4 rounded-lg shadow-sm flex flex-col items-center justify-center"
+  >
     <p style={{ color: iconColor }}>{icon}</p>
     <p className="text-gray-600 text-xs lg:text-sm mt-1">{label}</p>
     <p className="text-[#212121]  font-bold lg:text-2xl">{value}</p>

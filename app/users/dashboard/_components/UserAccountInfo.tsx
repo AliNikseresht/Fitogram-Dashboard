@@ -1,16 +1,12 @@
-import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { SupabaseProfile } from "@/types/UserProfile";
 import Image from "next/image";
-import React from "react";
 
-const UserAccountInfo = () => {
-  const { profile, avatarUrl, error, loading } = useUserProfile();
+interface UserAccountInfoProps {
+  profile: SupabaseProfile;
+  avatarUrl?: string | null;
+}
 
-  if (loading) return <CustomLoadingSpinner />;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
-  if (!profile)
-    return <div className="text-red-500">No profile data found.</div>;
-
+const UserAccountInfo = ({ profile, avatarUrl }: UserAccountInfoProps) => {
   const birthDate = profile.birth_date ? new Date(profile.birth_date) : null;
   const age = birthDate
     ? Math.floor(
@@ -22,14 +18,13 @@ const UserAccountInfo = () => {
     <div className="flex flex-col lg:flex-row gap-3">
       {avatarUrl && (
         <Image
-          src={avatarUrl}
+          src={"/avatars/" + avatarUrl}
           alt="user avatar"
           width={100}
           height={100}
-          className="rounded-xl border-4 border-[#fff] shadow-lg"
+          className="rounded-xl border-4 border-white shadow-lg"
         />
       )}
-
       <div className="flex justify-between flex-col">
         <h2 className="lg:text-2xl text-white font-semibold">
           hey {profile.full_name}!
@@ -38,11 +33,11 @@ const UserAccountInfo = () => {
         <p className="text-sm text-white">
           Goal: {profile.goal ?? "Not specified"}
         </p>
-        <div className="flex items-center gap-1 text-[#fff]">
+        <div className="flex items-center gap-1 text-white">
           <p className="text-sm">Status:</p>
           <p className="text-xs">{profile.status ?? "unknown"}</p>
         </div>
-        <div className="flex items-center gap-1 text-[#fff]">
+        <div className="flex items-center gap-1 text-white">
           <p className="text-sm">Last Login:</p>
           <p className="text-xs">
             {profile.last_login
