@@ -19,7 +19,6 @@ import fetchSleepLogs from "@/services/fetchSleepLogs";
 import formatDurationHoursMinutes from "@/functions/formatDuration";
 import { QuickLink } from "@/types/QuickLinksTypes";
 import ProgramCard from "./ProgramCard";
-import AiAssistantChat from "./chat/AiAssistantChat";
 
 export default function DashboardPage() {
   const { profile, loading, error } = useUserProfile();
@@ -86,10 +85,10 @@ export default function DashboardPage() {
         <UserGoalProgress progressPercent={70} />
         <UserSummaryCards sleep={sleepDuration} />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-2">
         <DailyLogForm profileId={profile.id} />
         <SleepLogForm userId={profile.id} />
-        <AiAssistantChat userId={profile.id} />
+        {/* <AiAssistantChat userId={profile.id} /> */}
         <CoachChatForUsers />
       </div>
       <div className="w-full bg-[#fff] shadow rounded-xl p-4">

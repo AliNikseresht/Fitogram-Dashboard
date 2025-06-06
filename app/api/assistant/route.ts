@@ -1,10 +1,4 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY!;
@@ -15,65 +9,27 @@ function containsPersian(text: string): boolean {
 
 export async function POST(req: Request) {
   try {
-    const { userId, message } = await req.json();
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    const { data: lastLog } = await supabase
-      .from("daily_logs")
-      .select("*")
-      .eq("profile_id", userId)
-      .order("log_date", { ascending: false })
-      .limit(1)
-      .single();
-
-    const { data: lastSleep } = await supabase
-      .from("sleep_logs")
-      .select("*")
-      .eq("user_id", userId)
-      .order("sleep_date", { ascending: false })
-      .limit(1)
-      .single();
-
-    const context = `
-User profile:
-- Goal: ${profile?.goal}
-- Height: ${profile?.height} cm
-- Weight: ${profile?.weight} kg
-- Body Fat: ${profile?.body_fat_percent}%
-- Muscle Mass: ${profile?.muscle_mass}kg
-
-Last daily log:
-- Date: ${lastLog?.log_date}
-- Weight: ${lastLog?.weight}
-- Mood: ${lastLog?.mood}
-- Water: ${lastLog?.water_intake} glasses
-
-Last sleep:
-- Duration: ${lastSleep?.duration} hours
-- Quality: ${lastSleep?.quality}/5
-`;
+    const { message } = await req.json();
 
     const isPersian = containsPersian(message);
+    const msgLower = message.toLowerCase();
+
+    const wantsExplanation =
+      /توضیح|بیشتر|دقیق|چرا|چطوری/.test(message) ||
+      /explain|more|detail|why|how/.test(msgLower);
 
     const systemPrompt = isPersian
-      ? "You are a professional fitness assistant. Please respond in clear and simple Persian. Use short sentences and common words."
-      : "You are a helpful fitness assistant who gives clear and concise advice in English.";
-
-    const languageInstruction = isPersian
-      ? "Respond only in Persian, clearly and understandably."
-      : "Respond only in English, clearly and concisely.";
+      ? wantsExplanation
+        ? `شما یک دستیار حرفه‌ای تناسب اندام هستید. پاسخ کامل و مفصل بدهید.`
+        : `شما یک دستیار حرفه‌ای تناسب اندام هستید. پاسخ‌های خود را فقط به صورت خلاصه و کوتاه بدهید.`
+      : wantsExplanation
+      ? `You are a professional fitness assistant. Give a detailed and thorough answer.`
+      : `You are a professional fitness assistant. Only give short and concise answers.`;
 
     const payload = {
       model: "mistralai/mistral-7b-instruct",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "system", content: languageInstruction },
-        { role: "user", content: `Context:\n${context}` },
         { role: "user", content: message },
       ],
     };

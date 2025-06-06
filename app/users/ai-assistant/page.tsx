@@ -1,9 +1,19 @@
-import React from 'react'
+"use client";
+
+import React from "react";
+import AiAssistantChat from "../dashboard/_components/chat/AiAssistantChat";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 
 const AiAssistantPage = () => {
-  return (
-    <div>AiAssistantPage</div>
-  )
-}
+  const { profile, loading, error } = useUserProfile();
 
-export default AiAssistantPage
+  if (loading) return <CustomLoadingBars />;
+  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (!profile)
+    return <div className="text-red-500">No profile data found.</div>;
+
+  return <AiAssistantChat userId={profile.id} />;
+};
+
+export default AiAssistantPage;
