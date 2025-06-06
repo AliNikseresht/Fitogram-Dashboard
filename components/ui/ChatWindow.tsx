@@ -54,7 +54,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           className="w-12 h-12 rounded-full object-cover border-2 border-gray-300"
           width={48}
           height={48}
-          priority
         />
         <p className="font-semibold">{otherUserName}</p>
       </div>

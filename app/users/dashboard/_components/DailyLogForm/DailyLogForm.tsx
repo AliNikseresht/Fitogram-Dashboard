@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FormValues, Mood } from "@/types/DailyLogFormTypes";
 
@@ -16,26 +16,24 @@ type Props = {
 };
 
 const DailyLogForm: React.FC<Props> = ({ profileId }) => {
-  const supabase = createClientComponentClient();
+  const supabase = useMemo(() => createClientComponentClient(), []);
+  const [waterIntake, setWaterIntake] = React.useState<number>(0);
+  const [mood, setMood] = React.useState<Mood | null>(null);
+  const [loading, setLoading] = React.useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    control,
   } = useForm<FormValues>({
     defaultValues: {
       weight: 60,
       notes: "",
     },
   });
-
-  const [waterIntake, setWaterIntake] = React.useState<number>(0);
-  const [mood, setMood] = React.useState<Mood | null>(null);
-  const [loading, setLoading] = React.useState(false);
-
-  const weightValue = watch("weight");
+  const weightValue = useWatch({ control, name: "weight", defaultValue: 60 });
 
   const onSubmit = async (data: FormValues) => {
     if (!profileId) {

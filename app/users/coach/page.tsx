@@ -73,7 +73,6 @@ const CoachSelectionPage = () => {
               <Image
                 src={coach.avatar_url}
                 alt={coach.full_name}
-                priority
                 width={64}
                 height={64}
                 className="border-2 border-[#bababa] rounded-full w-32 h-auto"
