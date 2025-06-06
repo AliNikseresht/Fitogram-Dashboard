@@ -27,7 +27,7 @@ const moodReverseMapping: Record<number, MoodType> = {
 };
 
 const MoodChart = ({ profileId }: { profileId: string }) => {
-  const { data, error } = useRealtimeTable<MoodLog>({
+  const { data, error, isLoading } = useRealtimeTable<MoodLog>({
     table: "daily_logs",
     filterColumn: "profile_id",
     filterValue: profileId,
@@ -44,7 +44,14 @@ const MoodChart = ({ profileId }: { profileId: string }) => {
       })) || [];
 
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-  if (!data) return <CustomLoadingBars />;
+  if (isLoading || data === null) {
+    return (
+      <div className="bg-[#f9fafb] rounded-lg p-2 h-[300px] flex items-center justify-center">
+        <CustomLoadingBars />
+      </div>
+    );
+  }
+
   if (moodData.length === 0) {
     return (
       <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">

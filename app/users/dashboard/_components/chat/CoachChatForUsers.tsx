@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ChatWindow from "@/components/ui/ChatWindow";
+import ChatWindowSkeleton from "@/components/ui/loadings/ChatWindowSkeleton";
 
 const CoachChatForUsers = () => {
-  const { profile, loading, error } = useUserProfile();
+  const { data: profile, isLoading, error } = useUserProfile();
   const supabase = createClientComponentClient();
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -22,8 +22,14 @@ const CoachChatForUsers = () => {
     fetchUser();
   }, [supabase]);
 
-  if (loading) return <CustomLoadingBars />;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (isLoading) return <ChatWindowSkeleton />;
+
+  if (error)
+    return (
+      <div role="alert" className="text-red-500">
+        Error: {(error as Error).message}
+      </div>
+    );
   if (!profile)
     return <div className="text-red-500">No profile data found.</div>;
 
@@ -37,7 +43,13 @@ const CoachChatForUsers = () => {
       </div>
     );
 
-  if (!userId) return <p>Loading user...</p>;
+  if (!userId)
+    return (
+      <div className="w-full max-w-sm p-4 rounded bg-gray-100 animate-pulse">
+        <div className="h-6 bg-gray-300 rounded mb-2 w-3/4"></div>
+        <div className="h-10 bg-gray-300 rounded"></div>
+      </div>
+    );
 
   return (
     <ChatWindow

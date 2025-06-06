@@ -14,12 +14,16 @@ interface MobileDrawerProps {
 }
 
 const MobileDrawer = ({ isOpen, onClose, pathname }: MobileDrawerProps) => {
-  const { profile, loading } = useUserProfile();
-
-  if (loading || !profile) return null;
+  const { data: profile, isLoading } = useUserProfile();
+  if (isLoading || !profile) return null;
 
   return (
-    <div className="lg:hidden fixed inset-0 z-50 pointer-events-none">
+    <div
+      className={clsx(
+        "lg:hidden fixed inset-0 z-50",
+        !isOpen && "pointer-events-none"
+      )}
+    >
       {/* Overlay */}
       <div
         className={clsx(

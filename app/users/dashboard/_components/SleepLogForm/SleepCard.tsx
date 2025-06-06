@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { useRealtimeTable } from "@/hooks/useRealtimeTable";
-import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import { SleepLog } from "@/types/SleepTableTypes";
 import { SleepTable } from "./SleepTable";
+import SleepTableSkeleton from "@/components/ui/loadings/SleepTableSkeleton";
 
 type Props = {
   userId: string;
@@ -17,7 +17,11 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
   );
   const [filterDays, setFilterDays] = useState(7);
 
-  const { data: logs = [], error } = useRealtimeTable<SleepLog>({
+  const {
+    data: logs,
+    error,
+    isLoading,
+  } = useRealtimeTable<SleepLog>({
     table: "sleep_logs",
     filterColumn: "user_id",
     filterValue: userId,
@@ -25,7 +29,9 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
   });
 
   if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-  if (!logs) return <CustomLoadingBars />;
+
+  if (isLoading || logs === null) return <SleepTableSkeleton />;
+
   if (logs.length === 0) {
     return (
       <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">
