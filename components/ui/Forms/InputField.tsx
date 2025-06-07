@@ -9,6 +9,8 @@ type InputFieldProps = {
   error?: FieldError;
   disabled?: boolean;
   registration: UseFormRegisterReturn;
+  textarea?: boolean;
+  required?: boolean;
 };
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -17,20 +19,33 @@ const InputField: React.FC<InputFieldProps> = ({
   error,
   disabled,
   registration,
+  textarea,
+  required,
 }) => {
   return (
     <div className="mb-4">
-      <label className="block mb-1 text-xs lg:text-sm font-medium text-[#212121]">
+      <label className="block mb-1 text-xs lg:text-sm font-medium text-gray-700">
         {label}
+        {required && <span className="text-red-600">*</span>}
       </label>
-      <input
-        type={type}
-        className={`w-full border text-xs lg:text-sm ${
-          error ? "border-red-500" : "border-[#bababa]"
-        } rounded px-3 py-2`}
-        disabled={disabled}
-        {...registration}
-      />
+      {textarea ? (
+        <textarea
+          className={`w-full border text-xs lg:text-sm ${
+            error ? "border-red-500" : "border-[#bababa]"
+          } rounded px-3 py-2`}
+          disabled={disabled}
+          {...registration}
+        />
+      ) : (
+        <input
+          type={type}
+          className={`w-full border text-xs lg:text-sm ${
+            error ? "border-red-500" : "border-[#bababa]"
+          } rounded px-3 py-2`}
+          disabled={disabled}
+          {...registration}
+        />
+      )}
       {error && (
         <p className="text-red-500 text-xs lg:text-sm mt-1">{error.message}</p>
       )}

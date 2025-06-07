@@ -65,17 +65,18 @@ const CoachChatForCoach = () => {
             >
               <Image
                 src={
-                  student.avatar_url?.startsWith("http")
-                    ? student.avatar_url
-                    : student.avatar_url
-                    ? `/avatars/${student.avatar_url}`
+                  student.avatar_url && student.avatar_url.trim() !== ""
+                    ? student.avatar_url.startsWith("http")
+                      ? student.avatar_url
+                      : `/avatars/${student.avatar_url}`
                     : "/default-avatar.png"
                 }
-                alt={student.full_name}
+                alt={student.full_name || "Student Avatar"}
                 className="w-10 h-10 rounded-full inline-block mr-2 object-cover border-2 border-[#bababa]"
                 width={48}
                 height={48}
               />
+
               {student.full_name}
             </li>
           ))}

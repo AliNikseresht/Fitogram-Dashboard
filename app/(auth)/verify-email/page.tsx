@@ -3,12 +3,12 @@ import React from "react";
 
 const VerifyEmailPage = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 text-black">
-      <div className="bg-[#fff] p-8 rounded-lg shadow-lg max-w-md w-full text-center">
-        <h2 className="text-2xl font-bold mb-4 text-[#2962eb]">
+    <div className="min-h-screen flex items-center justify-center text-black px-3 w-full">
+      <div className="bg-white p-3 lg:p-5 rounded-3xl shadow-lg w-full max-w-md flex justify-center flex-col items-center">
+        <h2 className="font-bold text-3xl mb-3 bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center">
           Check your email
         </h2>
-        <p className="text-gray-700">
+        <p className="text-[#212121] text-sm lg:text-base text-center">
           We&apos;ve sent a confirmation link to your email address.
           <br />
           Please click the link in your email to verify your account and

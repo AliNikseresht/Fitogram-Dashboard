@@ -94,7 +94,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Progress Charts */}
-      <div className="w-full bg-white shadow rounded-xl p-4 min-h-[500px]">
+      <div className="w-full bg-white shadow rounded-xl p-4 min-h-[200]">
         <h2 className="text-lg font-semibold mb-3">Progress Tracker</h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-3">
           <WeightChart profileId={profile.id} />
