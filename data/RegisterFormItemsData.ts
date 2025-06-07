@@ -8,7 +8,7 @@ export const inputFields: readonly InputFieldConfig[] = [
   },
   {
     name: "email",
-    label: "Email",
+    label: "Email Address",
     type: "email",
   },
   {

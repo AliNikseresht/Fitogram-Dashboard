@@ -71,8 +71,14 @@ const CoachSelectionPage = () => {
           >
             <div className="flex flex-col items-center gap-3">
               <Image
-                src={coach.avatar_url}
-                alt={coach.full_name}
+                src={
+                  coach.avatar_url && coach.avatar_url.trim() !== ""
+                    ? coach.avatar_url.startsWith("http")
+                      ? coach.avatar_url
+                      : `/avatars/${coach.avatar_url}`
+                    : "/default-avatar.png"
+                }
+                alt={coach.full_name || "Coach Avatar"}
                 width={64}
                 height={64}
                 className="border-2 border-[#bababa] rounded-full w-32 h-auto"
