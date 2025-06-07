@@ -169,7 +169,7 @@ const CoachProfileForm = () => {
       <button
         type="submit"
         disabled={loading || uploading}
-        className="w-full bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-white py-2 rounded-full mt-4"
+          className="bg-gradient-to-r from-[#2962eb] to-[#7b3aed] text-[#fff] w-full rounded-lg py-2 cursor-pointer"
       >
         {loading ? <CustomLoadingSpinner /> : "Save Profile"}
       </button>

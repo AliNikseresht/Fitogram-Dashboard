@@ -24,7 +24,7 @@ export default async function ProfilePage() {
   const role = profile?.role || "user";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-3 w-full h-full">
       {role === "coach" ? <CoachProfileForm /> : <UserProfileForm />}
     </div>
   );
