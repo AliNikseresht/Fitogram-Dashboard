@@ -1,12 +1,10 @@
 import calculateDuration from "@/functions/calculateDuration";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-const supabase = createClientComponentClient();
+import supabase from "@/libs/supabaseClient";
 
 async function fetchSleepLogs(userId: string) {
   const { data, error } = await supabase
     .from("sleep_logs")
-    .select("sleep_time, wake_time, quality, sleep_date")
+    .select("id, user_id, sleep_time, wake_time, quality, sleep_date")
     .eq("user_id", userId)
     .order("sleep_date", { ascending: true });
 

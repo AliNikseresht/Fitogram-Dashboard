@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { FormValues, Mood } from "@/types/DailyLogFormTypes";
 
 import WaterIntakeSelector from "./WaterIntakeSelector";
@@ -10,13 +9,13 @@ import MoodSelector from "./MoodSelector";
 import NotesInput from "./NotesInput";
 import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
 import { toast } from "react-toastify";
+import supabase from "@/libs/supabaseClient";
 
 type Props = {
   profileId: string;
 };
 
 const DailyLogForm: React.FC<Props> = ({ profileId }) => {
-  const supabase = useMemo(() => createClientComponentClient(), []);
   const [waterIntake, setWaterIntake] = React.useState<number>(0);
   const [mood, setMood] = React.useState<Mood | null>(null);
   const [loading, setLoading] = React.useState(false);
