@@ -2,17 +2,16 @@
 
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
 import { SleepFormValues } from "@/types/SleepTableTypes";
 import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
+import supabase from "@/libs/supabaseClient";
 
 type Props = {
   userId: string;
 };
 
 const SleepLogForm: React.FC<Props> = ({ userId }) => {
-  const supabase = createClientComponentClient();
   const [loading, setLoading] = React.useState(false);
 
   const {

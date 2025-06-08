@@ -18,7 +18,7 @@ const UserAccountInfo = ({ profile, avatarUrl }: UserAccountInfoProps) => {
     <div className="flex flex-col lg:flex-row gap-3">
       {avatarUrl && (
         <Image
-          src={"/avatars/" + avatarUrl}
+          src={avatarUrl}
           alt="user avatar"
           width={100}
           height={100}

@@ -147,7 +147,7 @@ export default function ProfileForm({
         {fields.map(({ name, label, type = "text", required, textarea }) =>
           name === "goal" ? (
             <div key={name} className="flex flex-col">
-              <label htmlFor={name} className="mb-1 font-medium text-gray-700">
+              <label htmlFor={name} className="font-medium text-gray-700">
                 {label}
                 {required && <span className="text-red-600">*</span>}
               </label>
@@ -156,7 +156,7 @@ export default function ProfileForm({
                 {...register(name as keyof UserProfileFormValues, {
                   required: required ? `${label} is required` : false,
                 })}
-                className={`border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`border rounded px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   errors[name as keyof UserProfileFormValues]
                     ? "border-red-600"
                     : "border-gray-300"

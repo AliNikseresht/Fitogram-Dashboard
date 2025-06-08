@@ -1,6 +1,4 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-const supabase = createClientComponentClient();
+import supabase from "@/libs/supabaseClient";
 
 async function fetchDailyLogs(profileId: string) {
   const { data, error } = await supabase

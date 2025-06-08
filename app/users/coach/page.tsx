@@ -63,7 +63,7 @@ const CoachSelectionPage = () => {
   return (
     <div className="p-4 space-y-4 w-full">
       <h2 className="text-xl font-bold">Choose Your Coach</h2>
-      <div className="grid grid-cols-1 lg:grid-cols-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2.5">
         {coaches.map((coach) => (
           <div
             key={coach.id}
@@ -90,7 +90,7 @@ const CoachSelectionPage = () => {
             </div>
             <button
               onClick={() => handleChooseCoach(coach.id)}
-              className="bg-blue-500 text-white px-3 py-1 rounded"
+              className="bg-blue-500 text-white px-4 py-1 rounded cursor-pointer"
             >
               Select
             </button>

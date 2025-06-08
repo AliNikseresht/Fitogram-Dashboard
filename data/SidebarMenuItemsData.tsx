@@ -5,7 +5,6 @@ import {
   FaChartLine,
   FaRegCalendarCheck,
   FaComments,
-  FaBook,
   FaCog,
   FaRobot,
 } from "react-icons/fa";
@@ -19,6 +18,5 @@ export const menuItems: MenuItem[] = [
   { label: "Plans", icon: <FaRegCalendarCheck />, href: "/plans" },
   { label: "Coach", icon: <FaComments />, href: "/coach" },
   { label: "AI Assistant", icon: <FaRobot />, href: "/ai-assistant" },
-  { label: "Library", icon: <FaBook />, href: "/library" },
   { label: "Settings", icon: <FaCog />, href: "/settings" },
 ];
