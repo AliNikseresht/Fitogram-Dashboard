@@ -1,16 +1,16 @@
 "use client";
 
+import { useMemo } from "react";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { UserHeader } from "./UserHeader";
 import { UserGoalProgress } from "./UserGoalProgress";
 import { UserSummaryCards } from "./UserSummaryCards";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import SleepCard from "./SleepLogForm/SleepCard";
-import fetchSleepLogs from "@/services/fetchSleepLogs";
-import formatDuration from "@/functions/formatDuration";
 import useDailyLogs from "@/hooks/useDailyLogs";
+import useSleepLogs from "@/hooks/useSleepLogs";
+import formatDuration from "@/functions/formatDuration";
 
 const DailyLogForm = dynamic(() => import("./DailyLogForm/DailyLogForm"), {
   ssr: false,
@@ -18,30 +18,15 @@ const DailyLogForm = dynamic(() => import("./DailyLogForm/DailyLogForm"), {
 const SleepLogForm = dynamic(() => import("./SleepLogForm/SleepLogForm"), {
   ssr: false,
 });
-
 const WeightChart = dynamic(() => import("./charts/WeightChart"), {
   ssr: false,
-  loading: () => (
-    <div className="min-h-[200px] bg-gray-100 animate-pulse rounded" />
-  ),
 });
 const WaterIntakeChart = dynamic(() => import("./charts/WaterIntakeChart"), {
   ssr: false,
-  loading: () => (
-    <div className="min-h-[200px] bg-gray-100 animate-pulse rounded" />
-  ),
 });
-const MoodChart = dynamic(() => import("./charts/MoodChart"), {
-  ssr: false,
-  loading: () => (
-    <div className="min-h-[200px] bg-gray-100 animate-pulse rounded" />
-  ),
-});
+const MoodChart = dynamic(() => import("./charts/MoodChart"), { ssr: false });
 const CoachChatForUsers = dynamic(() => import("./chat/CoachChatForUsers"), {
   ssr: false,
-  loading: () => (
-    <div className="min-h-[150px] bg-gray-100 animate-pulse rounded" />
-  ),
 });
 
 export default function DashboardPage() {
@@ -51,29 +36,27 @@ export default function DashboardPage() {
     error: logsError,
     isLoading: logsLoading,
   } = useDailyLogs(profile?.id || "");
-  const [sleepDuration, setSleepDuration] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!profile?.id) return;
-    const fetchSleep = async () => {
-      try {
-        const logs = await fetchSleepLogs(profile.id);
-        if (logs.length > 0) {
-          const last = logs[logs.length - 1];
-          setSleepDuration(formatDuration(last.duration));
-        }
-      } catch (err) {
-        console.error("Error fetching sleep logs:", err);
-      }
-    };
-    fetchSleep();
-  }, [profile?.id]);
+  const {
+    data: sleepLogs = [],
+    isLoading: sleepLoading,
+    error: sleepError,
+  } = useSleepLogs(profile?.id || "");
 
-  if (isLoading || logsLoading) return <CustomLoadingBars />;
-  if (error || logsError)
+  const lastSleepDuration = useMemo(() => {
+    if (sleepLogs.length === 0) return null;
+    const lastLog = sleepLogs[sleepLogs.length - 1];
+    return formatDuration(lastLog.duration);
+  }, [sleepLogs]);
+
+  if (isLoading || logsLoading || sleepLoading) return <CustomLoadingBars />;
+  if (error || logsError || sleepError)
     return (
       <div role="alert" className="text-red-500">
-        Error: {(error as Error)?.message || (logsError as Error)?.message}
+        Error:{" "}
+        {(error as Error)?.message ||
+          (logsError as Error)?.message ||
+          (sleepError as Error)?.message}
       </div>
     );
   if (!profile || !dailyLogs)
@@ -89,7 +72,7 @@ export default function DashboardPage() {
       <div className="flex flex-col bg-white rounded-xl shadow">
         <UserHeader profile={profile} avatarUrl={profile.avatar_url} />
         <UserGoalProgress progressPercent={70} />
-        <UserSummaryCards sleep={sleepDuration} />
+        <UserSummaryCards sleep={lastSleepDuration} />
       </div>
 
       {/* Forms */}

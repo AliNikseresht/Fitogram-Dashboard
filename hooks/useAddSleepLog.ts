@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import supabase from "@/libs/supabaseClient";
 import { SleepFormValues } from "@/types/SleepTableTypes";
+import calculateDuration from "@/functions/calculateDuration";
 
 export default function useAddSleepLog() {
   const queryClient = useQueryClient();
@@ -58,16 +59,4 @@ export default function useAddSleepLog() {
       );
     },
   });
-}
-
-function calculateDuration(
-  sleepH: number,
-  sleepM: number,
-  wakeH: number,
-  wakeM: number
-) {
-  const sleepMinutes = sleepH * 60 + sleepM;
-  let wakeMinutes = wakeH * 60 + wakeM;
-  if (wakeMinutes <= sleepMinutes) wakeMinutes += 24 * 60;
-  return (wakeMinutes - sleepMinutes) / 60;
 }
