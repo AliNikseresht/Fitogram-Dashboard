@@ -1,5 +1,5 @@
+import supabase from "@/libs/supabaseClient";
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface Message {
   id: string;
@@ -15,7 +15,6 @@ interface UseChatParams {
 }
 
 export const useChat = ({ userId, otherUserId }: UseChatParams) => {
-  const supabase = createClientComponentClient();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
 

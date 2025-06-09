@@ -3,13 +3,12 @@
 import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { FormValues, Mood } from "@/types/DailyLogFormTypes";
-
 import WaterIntakeSelector from "./WaterIntakeSelector";
 import MoodSelector from "./MoodSelector";
 import NotesInput from "./NotesInput";
 import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
 import { toast } from "react-toastify";
-import supabase from "@/libs/supabaseClient";
+import useAddDailyLog from "@/hooks/useAddDailyLog";
 
 type Props = {
   profileId: string;
@@ -18,7 +17,7 @@ type Props = {
 const DailyLogForm: React.FC<Props> = ({ profileId }) => {
   const [waterIntake, setWaterIntake] = React.useState<number>(0);
   const [mood, setMood] = React.useState<Mood | null>(null);
-  const [loading, setLoading] = React.useState(false);
+  const { mutate, isPending } = useAddDailyLog();
 
   const {
     register,
@@ -34,7 +33,7 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
   });
   const weightValue = useWatch({ control, name: "weight", defaultValue: 60 });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = (data: FormValues) => {
     if (!profileId) {
       toast.error("User not logged in");
       return;
@@ -45,30 +44,20 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
       return;
     }
 
-    setLoading(true);
-
-    const payload = {
-      profile_id: profileId,
-      weight: data.weight,
-      water_intake: waterIntake,
-      mood: mood,
-      notes: data.notes,
-      created_at: new Date().toISOString(),
-      log_date: new Date().toISOString().split("T")[0],
-    };
-
-    const { error } = await supabase.from("daily_logs").insert([payload]);
-
-    setLoading(false);
-
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Daily log saved successfully!");
-      reset();
-      setWaterIntake(0);
-      setMood(null);
-    }
+    mutate(
+      { profileId, data, waterIntake, mood },
+      {
+        onSuccess: () => {
+          toast.success("Daily log saved successfully!");
+          reset();
+          setWaterIntake(0);
+          setMood(null);
+        },
+        onError: (error: Error) => {
+          toast.error("Error: " + error.message);
+        },
+      }
+    );
   };
 
   return (
@@ -111,10 +100,10 @@ const DailyLogForm: React.FC<Props> = ({ profileId }) => {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={isPending}
         className="w-full bg-[#0284c7] text-[#fff] py-2 rounded cursor-pointer disabled:opacity-50 hover:bg-[#027bc7] duration-200"
       >
-        {loading ? <CustomLoadingSpinner /> : "Save Log"}
+        {isPending ? <CustomLoadingSpinner /> : "Save Log"}
       </button>
     </form>
   );

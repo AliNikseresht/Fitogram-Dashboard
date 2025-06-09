@@ -17,9 +17,9 @@ export const SleepTable: React.FC<Props> = ({ logs }) => {
         </tr>
       </thead>
       <tbody>
-        {logs.map((log) => (
+        {logs.map((log, index) => (
           <tr
-            key={log.id}
+            key={log.id ?? index}
             className="border-b border-[#bababa] hover:bg-gray-100"
           >
             <td className="p-2 text-xs sm:text-sm">
