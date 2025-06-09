@@ -5,14 +5,14 @@ import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 import { SleepFormValues } from "@/types/SleepTableTypes";
 import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
-import supabase from "@/libs/supabaseClient";
+import useAddSleepLog from "@/hooks/useAddSleepLog";
 
 type Props = {
   userId: string;
 };
 
 const SleepLogForm: React.FC<Props> = ({ userId }) => {
-  const [loading, setLoading] = React.useState(false);
+  const { mutate, isPending } = useAddSleepLog();
 
   const {
     control,
@@ -32,58 +32,19 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
 
   const qualityValue = watch("quality");
 
-  function calculateDuration(
-    sleepH: number,
-    sleepM: number,
-    wakeH: number,
-    wakeM: number
-  ) {
-    const sleepMinutes = sleepH * 60 + sleepM;
-    let wakeMinutes = wakeH * 60 + wakeM;
-    if (wakeMinutes <= sleepMinutes) wakeMinutes += 24 * 60;
-    return (wakeMinutes - sleepMinutes) / 60;
-  }
-
-  const onSubmit = async (data: SleepFormValues) => {
-    setLoading(true);
-    try {
-      const duration = calculateDuration(
-        Number(data.sleepHour),
-        Number(data.sleepMinute),
-        Number(data.wakeHour),
-        Number(data.wakeMinute)
-      );
-      const sleep_date = new Date().toISOString().slice(0, 10);
-
-      const sleep_time = `${data.sleepHour.padStart(
-        2,
-        "0"
-      )}:${data.sleepMinute.padStart(2, "0")}:00`;
-      const wake_time = `${data.wakeHour.padStart(
-        2,
-        "0"
-      )}:${data.wakeMinute.padStart(2, "0")}:00`;
-
-      const { error } = await supabase.from("sleep_logs").insert({
-        user_id: userId,
-        sleep_date,
-        sleep_time,
-        wake_time,
-        duration,
-        quality: data.quality,
-      });
-
-      if (error) {
-        toast.error("Error saving sleep log: " + error.message);
-      } else {
-        toast.success("Sleep log saved successfully!");
-        reset();
+  const onSubmit = (data: SleepFormValues) => {
+    mutate(
+      { userId, data },
+      {
+        onSuccess: () => {
+          toast.success("Sleep log saved successfully!");
+          reset();
+        },
+        onError: (error: Error) => {
+          toast.error("Error: " + error.message);
+        },
       }
-    } catch {
-      toast.error("Unexpected error");
-    } finally {
-      setLoading(false);
-    }
+    );
   };
 
   const hours = Array.from({ length: 24 }, (_, i) =>
@@ -214,10 +175,10 @@ const SleepLogForm: React.FC<Props> = ({ userId }) => {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={isPending}
         className="w-full bg-[#0284c7] text-white py-2 rounded cursor-pointer disabled:opacity-50 hover:bg-[#027bc7] duration-200"
       >
-        {loading ? <CustomLoadingSpinner /> : "Submit"}
+        {isPending ? <CustomLoadingSpinner /> : "Submit"}
       </button>
     </form>
   );

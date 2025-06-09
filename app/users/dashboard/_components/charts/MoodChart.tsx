@@ -9,10 +9,17 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
-import { useRealtimeTable } from "@/hooks/useRealtimeTable";
 import CustomTooltipMoodChart from "./_components/CustomTooltipMoodChart";
-import { MoodLog, MoodType } from "@/types/ChartsType";
+import { MoodType } from "@/types/ChartsType";
+
+type DailyLog = {
+  mood?: MoodType;
+  log_date: string;
+};
+
+type MoodChartProps = {
+  data: DailyLog[];
+};
 
 const moodMapping: Record<MoodType, number> = {
   happy: 3,
@@ -26,33 +33,17 @@ const moodReverseMapping: Record<number, MoodType> = {
   1: "sad",
 };
 
-const MoodChart = ({ profileId }: { profileId: string }) => {
-  const { data, error, isLoading } = useRealtimeTable<MoodLog>({
-    table: "daily_logs",
-    filterColumn: "profile_id",
-    filterValue: profileId,
-    orderBy: { column: "log_date", ascending: true },
-  });
-
-  const moodData =
+const MoodChart = ({ data }: MoodChartProps) => {
+  const parsedMoodData =
     data
       ?.filter((log) => log.mood)
-      .map(({ mood, log_date }) => ({
-        moodNum: moodMapping[mood],
-        mood,
-        log_date,
+      .map((log) => ({
+        moodNum: moodMapping[log.mood as MoodType],
+        mood: log.mood,
+        log_date: log.log_date,
       })) || [];
 
-  if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-  if (isLoading || data === null) {
-    return (
-      <div className="bg-[#f9fafb] rounded-lg p-2 h-[300px] flex items-center justify-center">
-        <CustomLoadingBars />
-      </div>
-    );
-  }
-
-  if (moodData.length === 0) {
+  if (parsedMoodData.length === 0) {
     return (
       <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">
         No data has been recorded yet. Please submit your first entry to see
@@ -65,7 +56,7 @@ const MoodChart = ({ profileId }: { profileId: string }) => {
     <div className="bg-[#f9fafb] rounded-lg p-2">
       <h3 className="text-sm mb-2">Mood Progress</h3>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={moodData} className="lg:my-2 -ml-4 lg:-ml-4">
+        <LineChart data={parsedMoodData} className="lg:my-2 -ml-4 lg:-ml-4">
           <CartesianGrid stroke="#ddd" strokeDasharray="4 4" />
           <XAxis
             dataKey="log_date"
@@ -77,8 +68,8 @@ const MoodChart = ({ profileId }: { profileId: string }) => {
             domain={[1, 3]}
             ticks={[1, 2, 3]}
             tickFormatter={(value) =>
-              moodReverseMapping[value].charAt(0).toUpperCase() +
-              moodReverseMapping[value].slice(1)
+              moodReverseMapping[value as number].charAt(0).toUpperCase() +
+              moodReverseMapping[value as number].slice(1)
             }
             tick={{ fontSize: 11, fill: "#666" }}
             tickLine={false}

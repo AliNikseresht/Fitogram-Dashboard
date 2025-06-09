@@ -10,6 +10,7 @@ import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import SleepCard from "./SleepLogForm/SleepCard";
 import fetchSleepLogs from "@/services/fetchSleepLogs";
 import formatDuration from "@/functions/formatDuration";
+import useDailyLogs from "@/hooks/useDailyLogs";
 
 const DailyLogForm = dynamic(() => import("./DailyLogForm/DailyLogForm"), {
   ssr: false,
@@ -45,6 +46,11 @@ const CoachChatForUsers = dynamic(() => import("./chat/CoachChatForUsers"), {
 
 export default function DashboardPage() {
   const { data: profile, isLoading, error } = useUserProfile();
+  const {
+    data: dailyLogs,
+    error: logsError,
+    isLoading: logsLoading,
+  } = useDailyLogs(profile?.id || "");
   const [sleepDuration, setSleepDuration] = useState<string | null>(null);
 
   useEffect(() => {
@@ -63,14 +69,14 @@ export default function DashboardPage() {
     fetchSleep();
   }, [profile?.id]);
 
-  if (isLoading) return <CustomLoadingBars />;
-  if (error)
+  if (isLoading || logsLoading) return <CustomLoadingBars />;
+  if (error || logsError)
     return (
       <div role="alert" className="text-red-500">
-        Error: {(error as Error).message}
+        Error: {(error as Error)?.message || (logsError as Error)?.message}
       </div>
     );
-  if (!profile)
+  if (!profile || !dailyLogs)
     return (
       <div role="alert" className="text-red-500">
         No profile data found.
@@ -97,9 +103,9 @@ export default function DashboardPage() {
       <div className="w-full bg-white shadow rounded-xl p-4 min-h-[200]">
         <h2 className="text-lg font-semibold mb-3">Progress Tracker</h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-3">
-          <WeightChart profileId={profile.id} />
-          <WaterIntakeChart profileId={profile.id} />
-          <MoodChart profileId={profile.id} />
+          <WeightChart weightData={dailyLogs} />
+          <WaterIntakeChart waterData={dailyLogs} />
+          <MoodChart data={dailyLogs} />
         </div>
         <SleepCard userId={profile.id} />
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { WeightLog } from "@/types/ChartsType";
 import React from "react";
 import {
   LineChart,
@@ -10,28 +11,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
-import { useRealtimeTable } from "@/hooks/useRealtimeTable";
-import { WeightLog } from "@/types/ChartsType";
 
-const WeightChart = ({ profileId }: { profileId: string }) => {
-  const { data, error, isLoading } = useRealtimeTable<WeightLog>({
-    table: "daily_logs",
-    filterColumn: "profile_id",
-    filterValue: profileId,
-    orderBy: { column: "log_date", ascending: true },
-  });
+type WeightChartProps = {
+  weightData: WeightLog[];
+};
 
-  if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-  if (isLoading || data === null) {
-    return (
-      <div className="bg-[#f9fafb] rounded-lg p-2 h-[300px] flex items-center justify-center">
-        <CustomLoadingBars />
-      </div>
-    );
-  }
-
-  if (data.length === 0) {
+const WeightChart = ({ weightData }: WeightChartProps) => {
+  if (!weightData || weightData.length === 0) {
     return (
       <div className="bg-yellow-50 text-yellow-800 p-4 rounded-md text-sm">
         No data has been recorded yet. Please submit your first entry to see
@@ -45,7 +31,7 @@ const WeightChart = ({ profileId }: { profileId: string }) => {
       <h3 className="text-sm mb-2">Weight Progress</h3>
 
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data} className="lg:my-2 -ml-6 lg:-ml-5">
+        <LineChart data={weightData} className="lg:my-2 -ml-6 lg:-ml-5">
           <CartesianGrid stroke="#ddd" strokeDasharray="4 4" />
           <XAxis
             dataKey="log_date"

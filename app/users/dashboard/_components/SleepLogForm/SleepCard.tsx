@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRealtimeTable } from "@/hooks/useRealtimeTable";
+import React, { useState, useMemo } from "react";
+import useSleepLogs from "@/hooks/useSleepLogs";
 import { SleepLog } from "@/types/SleepTableTypes";
 import { SleepTable } from "./SleepTable";
 import SleepTableSkeleton from "@/components/ui/loadings/SleepTableSkeleton";
@@ -11,26 +11,19 @@ type Props = {
 };
 
 const SleepCard: React.FC<Props> = ({ userId }) => {
-  const orderBy = React.useMemo(
-    () => ({ column: "sleep_date", ascending: true }),
+  const orderBy = useMemo(
+    () => ({ column: "sleep_date", ascending: false }),
     []
   );
   const [filterDays, setFilterDays] = useState(7);
+  const { data: logs, error, isLoading } = useSleepLogs(userId);
 
-  const {
-    data: logs,
-    error,
-    isLoading,
-  } = useRealtimeTable<SleepLog>({
-    table: "sleep_logs",
-    filterColumn: "user_id",
-    filterValue: userId,
-    orderBy,
-  });
+  if (error)
+    return (
+      <p className="text-red-600 font-semibold">{(error as Error).message}</p>
+    );
 
-  if (error) return <p className="text-red-600 font-semibold">{error}</p>;
-
-  if (isLoading || logs === null) return <SleepTableSkeleton />;
+  if (isLoading || !logs) return <SleepTableSkeleton />;
 
   if (logs.length === 0) {
     return (
@@ -41,7 +34,13 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
     );
   }
 
-  const filteredLogs = logs.slice(-filterDays);
+  const sortedLogs = [...logs].sort((a, b) => {
+    if (!orderBy.ascending)
+      return a[orderBy.column] < b[orderBy.column] ? 1 : -1;
+    return a[orderBy.column] > b[orderBy.column] ? 1 : -1;
+  });
+
+  const filteredLogs = sortedLogs.slice(0, filterDays);
 
   const averageDuration =
     filteredLogs.reduce((acc, cur) => acc + cur.duration, 0) /
@@ -49,12 +48,12 @@ const SleepCard: React.FC<Props> = ({ userId }) => {
 
   const bestDay = filteredLogs.reduce(
     (best, cur) => (cur.quality > best.quality ? cur : best),
-    filteredLogs[0] || null
+    filteredLogs[0] || ({} as SleepLog)
   );
 
   const worstDay = filteredLogs.reduce(
     (worst, cur) => (cur.quality < worst.quality ? cur : worst),
-    filteredLogs[0] || null
+    filteredLogs[0] || ({} as SleepLog)
   );
 
   return (
