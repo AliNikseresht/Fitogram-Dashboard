@@ -1,9 +1,9 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CoachChatForCoach from "../_components/chat/CoachChatForCoach";
+import supabase from "@/libs/supabaseClient";
 
 interface Profile {
   full_name: string;
@@ -24,7 +24,6 @@ interface RawCoachRequest {
 }
 
 export default function CoachesPage() {
-  const supabase = createClientComponentClient();
   const [requests, setRequests] = useState<CoachRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Profile[]>([]);

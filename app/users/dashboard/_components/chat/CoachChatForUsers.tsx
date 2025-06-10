@@ -3,13 +3,12 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import ChatWindow from "@/components/ui/ChatWindow";
 import ChatWindowSkeleton from "@/components/ui/loadings/ChatWindowSkeleton";
+import supabase from "@/libs/supabaseClient";
 
 const CoachChatForUsers = () => {
   const { data: profile, isLoading, error } = useUserProfile();
-  const supabase = createClientComponentClient();
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,11 +34,11 @@ const CoachChatForUsers = () => {
 
   if (!profile.coach)
     return (
-      <div>
-        <p className="text-red-500 mb-2">You haven`t selected a coach yet.</p>
+      <div className="h-full w-full max-w-sm bg-[#fff] p-4 rounded-xl shadow-md">
+        <p className="text-red-500 mb-4 font-semibold">You haven`t selected a coach yet.</p>
         <Link
           href="/users/coach"
-          className="text-xs lg:text-base p-2 font-bold bg-gradient-to-b from-[#2962eb] to-[#7b3aed] bg-clip-text text-transparent text-center"
+          className="text-xs lg:text-base p-2.5 rounded-md font-bold bg-gradient-to-b from-[#2962eb] to-[#7b3aed] text-white"
         >
           Choose a Coach
         </Link>

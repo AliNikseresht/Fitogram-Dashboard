@@ -1,10 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { SupabaseProfile } from "@/types/UserProfile";
-
-const supabase = createClientComponentClient();
+import supabase from "@/libs/supabaseClient";
 
 async function fetchUserProfile(): Promise<SupabaseProfile> {
   const {
@@ -15,7 +13,6 @@ async function fetchUserProfile(): Promise<SupabaseProfile> {
   if (sessionError || !session?.user) {
     throw new Error("Session not found");
   }
-
   const user = session.user;
 
   const { data: profileData, error } = await supabase

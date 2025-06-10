@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import supabase from "@/libs/supabaseClient";
 
 type Coach = {
   id: string;
@@ -14,7 +14,6 @@ type Coach = {
 };
 
 const CoachSelectionPage = () => {
-  const supabase = createClientComponentClient();
   const [coaches, setCoaches] = useState<Coach[]>([]);
   const router = useRouter();
 
