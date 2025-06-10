@@ -77,7 +77,7 @@ export default function CoachesPage() {
     }
 
     setStudents(studentData ?? []);
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     const fetchRequests = async () => {

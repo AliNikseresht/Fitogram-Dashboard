@@ -19,7 +19,7 @@ const CoachChatForUsers = () => {
       if (user) setUserId(user.id);
     }
     fetchUser();
-  }, [supabase]);
+  }, []);
 
   if (isLoading) return <ChatWindowSkeleton />;
 

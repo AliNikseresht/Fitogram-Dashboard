@@ -11,6 +11,7 @@ type InputFieldProps = {
   registration: UseFormRegisterReturn;
   textarea?: boolean;
   required?: boolean;
+  placeholder?: string;
 };
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -21,6 +22,7 @@ const InputField: React.FC<InputFieldProps> = ({
   registration,
   textarea,
   required,
+  placeholder,
 }) => {
   return (
     <div className="mb-4">
@@ -44,6 +46,7 @@ const InputField: React.FC<InputFieldProps> = ({
           } rounded px-3 py-2`}
           disabled={disabled}
           {...registration}
+          placeholder={placeholder}
         />
       )}
       {error && (

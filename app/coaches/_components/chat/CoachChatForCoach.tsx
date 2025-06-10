@@ -26,7 +26,7 @@ const CoachChatForCoach = () => {
       if (user) setUserId(user.id);
     }
     fetchUser();
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     async function fetchStudents() {
