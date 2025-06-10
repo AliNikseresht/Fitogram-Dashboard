@@ -38,7 +38,7 @@ const CoachChatForUsers = () => {
         <p className="text-red-500 mb-4 font-semibold">You haven`t selected a coach yet.</p>
         <Link
           href="/users/coach"
-          className="text-xs lg:text-base p-2.5 rounded-md font-bold bg-gradient-to-b from-[#2962eb] to-[#7b3aed] text-white"
+          className="text-xs lg:text-base p-2.5 rounded-md font-bold bg-gradient-to-br from-[#f9e8ff] to-[#e1f1fe] text-[#0369a1] shadow"
         >
           Choose a Coach
         </Link>

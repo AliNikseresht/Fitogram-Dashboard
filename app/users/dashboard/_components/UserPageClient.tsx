@@ -52,7 +52,7 @@ export default function DashboardPage() {
       <UserHeader profile={profile} avatarUrl={profile.avatar_url} />
 
       {/* Forms */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
+      <div className="flex flex-col lg:flex-row justify-between w-full h-full gap-6 lg:gap-0">
         <DailyLogForm profileId={profile.id} />
         <SleepLogForm userId={profile.id} />
         <CoachChatForUsers />

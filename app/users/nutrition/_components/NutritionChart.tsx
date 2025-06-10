@@ -48,8 +48,8 @@ export default function NutritionChart({
   );
 
   return (
-    <div className="h-72">
-      <ResponsiveContainer>
+    <div className="w-full h-[300px] lg:h-full bg-white rounded-xl shadow-md pt-4">
+      <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={pieData}

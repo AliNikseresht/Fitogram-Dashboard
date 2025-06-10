@@ -58,10 +58,10 @@ export default function NutritionPage() {
         dailyLogs={lastThreeDailyLogs}
         sleepLogs={lastThreeSleepLogs}
       />
-
-      <NutritionChart dailyLogs={dailyLogs} sleepLogs={sleepLogs} />
-
-      <Recommendations recommendations={recommendations} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Recommendations recommendations={recommendations} />
+        <NutritionChart dailyLogs={dailyLogs} sleepLogs={sleepLogs} />
+      </div>
     </div>
   );
 }
