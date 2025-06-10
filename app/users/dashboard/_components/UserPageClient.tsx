@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { UserHeader } from "./UserHeader";
+import { UserHeader } from "./UserInfo/UserHeader";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
 import SleepCard from "./SleepLogForm/SleepCard";
 import useDailyLogs from "@/hooks/useDailyLogs";

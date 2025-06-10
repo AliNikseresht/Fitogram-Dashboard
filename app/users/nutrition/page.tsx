@@ -1,54 +1,55 @@
-"use client";
-
-import { useEffect, useState, useMemo } from "react";
-import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
-import supabase from "@/libs/supabaseClient";
-import useDailyLogs from "@/hooks/useDailyLogs";
-import useSleepLogs from "@/hooks/useSleepLogs";
-import NutritionChart from "./_components/NutritionChart";
+import { cookies } from "next/headers";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { generateRecommendations } from "@/functions/generateRecommendations";
+import NutritionChart from "./_components/NutritionChart";
 import Recommendations from "./_components/RecommendationsSection";
 import LogsSection from "./_components/LogsSection";
 
-export default function NutritionPage() {
-  const [userId, setUserId] = useState<string | null>(null);
+export default async function NutritionPage() {
+  const supabase = createServerComponentClient({ cookies });
 
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUserId(user?.id ?? null);
-    });
-  }, []);
-
+  // Get user
   const {
-    data: dailyLogs = [],
-    isLoading: dailyLoading,
-    error: dailyError,
-  } = useDailyLogs(userId ?? "");
-  const {
-    data: sleepLogs = [],
-    isLoading: sleepLoading,
-    error: sleepError,
-  } = useSleepLogs(userId ?? "");
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-  const loading = dailyLoading || sleepLoading;
-  const error = dailyError || sleepError;
-
-  const lastThreeDailyLogs = useMemo(() => dailyLogs.slice(-3), [dailyLogs]);
-  const lastThreeSleepLogs = useMemo(() => sleepLogs.slice(-3), [sleepLogs]);
-
-  const recommendations = useMemo(
-    () => generateRecommendations(lastThreeDailyLogs, lastThreeSleepLogs),
-    [lastThreeDailyLogs, lastThreeSleepLogs]
-  );
-
-  if (loading) return <CustomLoadingBars />;
-
-  if (error)
+  if (userError || !user) {
     return (
       <div className="p-4 text-red-600 font-semibold">
-        Error loading data: {error.message}
+        User not authenticated
       </div>
     );
+  }
+
+  // Get daily logs
+  const { data: dailyLogs, error: dailyError } = await supabase
+    .from("daily_logs")
+    .select("*")
+    .eq("profile_id", user.id);
+
+  // Get sleep logs
+  const { data: sleepLogs, error: sleepError } = await supabase
+    .from("sleep_logs")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (dailyError || sleepError) {
+    return (
+      <div className="p-4 text-red-600 font-semibold">
+        Error loading data:{" "}
+        {dailyError?.message || sleepError?.message || "Unknown error"}
+      </div>
+    );
+  }
+
+  const lastThreeDailyLogs = dailyLogs?.slice(-3) || [];
+  const lastThreeSleepLogs = sleepLogs?.slice(-3) || [];
+
+  const recommendations = generateRecommendations(
+    lastThreeDailyLogs,
+    lastThreeSleepLogs
+  );
 
   return (
     <div className="p-4 space-y-6 w-full">
@@ -58,9 +59,14 @@ export default function NutritionPage() {
         dailyLogs={lastThreeDailyLogs}
         sleepLogs={lastThreeSleepLogs}
       />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Recommendations recommendations={recommendations} />
-        <NutritionChart dailyLogs={dailyLogs} sleepLogs={sleepLogs} />
+
+        <NutritionChart
+          dailyLogs={dailyLogs || []}
+          sleepLogs={sleepLogs || []}
+        />
       </div>
     </div>
   );

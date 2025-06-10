@@ -1,8 +1,8 @@
 "use client";
 
 import UserAccountInfo from "./UserAccountInfo";
-import UserBodyInfo from "./UserBodyInfo";
 import { SupabaseProfile } from "@/types/UserProfile";
+import UserBodyInfo from "./UserBodyInfo";
 
 interface UserHeaderProps {
   profile: SupabaseProfile;
