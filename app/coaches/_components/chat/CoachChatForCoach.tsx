@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "react-toastify";
 import ChatWindow from "@/components/ui/ChatWindow";
 import Image from "next/image";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
+import supabase from "@/libs/supabaseClient";
 
 interface Student {
   id: string;
@@ -14,7 +14,6 @@ interface Student {
 }
 
 const CoachChatForCoach = () => {
-  const supabase = createClientComponentClient();
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -27,7 +26,7 @@ const CoachChatForCoach = () => {
       if (user) setUserId(user.id);
     }
     fetchUser();
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     async function fetchStudents() {

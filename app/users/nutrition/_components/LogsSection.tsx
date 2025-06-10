@@ -2,25 +2,7 @@
 
 import { FaTint, FaBed } from "react-icons/fa";
 import LogsCard from "./LogsCard";
-
-interface DailyLog {
-  log_date: string;
-  weight: number;
-  water_intake: number;
-  mood: string;
-}
-
-interface SleepLog {
-  sleep_date: string;
-  duration: number;
-  sleep_time: string;
-  wake_time: string;
-}
-
-interface LogsSectionProps {
-  dailyLogs: DailyLog[];
-  sleepLogs: SleepLog[];
-}
+import { LogsSectionProps } from "@/types/LogsSectionNutrition";
 
 export default function LogsSection({
   dailyLogs,
@@ -30,29 +12,29 @@ export default function LogsSection({
     <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <LogsCard
         title={
-          <>
+          <div className="h-2">
             <FaTint className="inline mr-1 text-blue-600" /> Daily Logs (Last 3)
-          </>
+          </div>
         }
         logs={dailyLogs}
-        bgColor="bg-blue-50"
-        hoverColor="bg-blue-100"
+        bgColor="bg-white"
+        hoverColor=""
         renderItem={(log) => (
           <>
             <div>
-              <span className="font-semibold text-gray-700">Date:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Date:</span>{" "}
               {log.log_date}
             </div>
             <div>
-              <span className="font-semibold text-gray-700">Weight:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Weight:</span>{" "}
               {log.weight} kg
             </div>
             <div>
-              <span className="font-semibold text-gray-700">Water Intake:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Water Intake:</span>{" "}
               {log.water_intake} glasses
             </div>
             <div>
-              <span className="font-semibold text-gray-700">Mood:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Mood:</span>{" "}
               {log.mood}
             </div>
           </>
@@ -61,30 +43,30 @@ export default function LogsSection({
 
       <LogsCard
         title={
-          <>
+          <div className="h-2">
             <FaBed className="inline mr-1 text-purple-600" /> Sleep Logs (Last
             3)
-          </>
+          </div>
         }
         logs={sleepLogs}
-        bgColor="bg-purple-50"
-        hoverColor="bg-purple-100"
+        bgColor="bg-white"
+        hoverColor=""
         renderItem={(log) => (
           <>
             <div>
-              <span className="font-semibold text-gray-700">Date:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Date:</span>{" "}
               {log.sleep_date}
             </div>
             <div>
-              <span className="font-semibold text-gray-700">Duration:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Duration:</span>{" "}
               {log.duration} hours
             </div>
             <div>
-              <span className="font-semibold text-gray-700">Sleep Time:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Sleep Time:</span>{" "}
               {log.sleep_time}
             </div>
             <div>
-              <span className="font-semibold text-gray-700">Wake Time:</span>{" "}
+              <span className="font-semibold text-gray-700 text-xs lg:text-sm">Wake Time:</span>{" "}
               {log.wake_time}
             </div>
           </>

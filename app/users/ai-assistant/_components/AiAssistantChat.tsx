@@ -104,7 +104,7 @@ export default function AiAssistantChat({ userId }: { userId: string }) {
         )}
       </div>
 
-      <div className="w-full bg-gray-100 lg:rounded-3xl flex flex-col shadow-md p-1">
+      <div className="w-full bg-gradient-to-br from-[#f9e8ff] to-[#e1f1fe] lg:rounded-2xl flex flex-col shadow-md p-1">
         <textarea
           rows={2}
           placeholder="Ask anything"

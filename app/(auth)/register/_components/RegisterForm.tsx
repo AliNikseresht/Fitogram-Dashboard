@@ -4,16 +4,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import InputField from "@/components/ui/Forms/InputField";
 import { inputFields } from "@/data/RegisterFormItemsData";
 import { FormData, schema } from "@/schemas/registerSchema";
 import Link from "next/link";
 import GradientSubmitButton from "@/components/ui/buttons/GradientSubmitButton";
 import AuthFormWrapper from "../../_components/AuthFormWrapper";
+import supabase from "@/libs/supabaseClient";
 
 const RegisterForm = () => {
-  const supabase = createClientComponentClient();
   const router = useRouter();
 
   const {

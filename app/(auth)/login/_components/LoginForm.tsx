@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginInputFields } from "@/data/LoginFormItemsData";
 import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -13,9 +12,9 @@ import { FaCaretRight } from "react-icons/fa6";
 import GradientSubmitButton from "@/components/ui/buttons/GradientSubmitButton";
 import InputField from "@/components/ui/Forms/InputField";
 import AuthFormWrapper from "../../_components/AuthFormWrapper";
+import supabase from "@/libs/supabaseClient";
 
 const LoginForm = () => {
-  const supabase = createClientComponentClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 

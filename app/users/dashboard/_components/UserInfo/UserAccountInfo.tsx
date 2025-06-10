@@ -16,15 +16,17 @@ const UserAccountInfo = ({ profile, avatarUrl }: UserAccountInfoProps) => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-3">
-      {avatarUrl && (
-        <Image
-          src={avatarUrl}
-          alt="user avatar"
-          width={100}
-          height={100}
-          className="rounded-xl border-4 border-white shadow-lg"
-        />
-      )}
+      <div className="w-36 h-36">
+        {avatarUrl && (
+          <Image
+            src={avatarUrl}
+            alt="user avatar"
+            width={100}
+            height={100}
+            className="rounded-xl border-4 border-white shadow-lg w-full h-auto"
+          />
+        )}
+      </div>
       <div className="flex justify-between flex-col">
         <h2 className="lg:text-2xl text-white font-semibold">
           hey {profile.full_name}!

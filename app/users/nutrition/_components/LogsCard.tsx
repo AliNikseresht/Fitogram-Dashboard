@@ -13,15 +13,15 @@ interface LogsCardProps<T> {
 export default function LogsCard<T>({
   title,
   logs,
-  bgColor = "bg-gray-50",
-  hoverColor = "bg-gray-100",
+  bgColor = "bg-white",
+  hoverColor = "",
   renderItem,
 }: LogsCardProps<T>) {
   return (
     <div
       className={`${bgColor} p-4 rounded-xl shadow hover:${hoverColor} transition`}
     >
-      <h3 className="text-lg font-semibold mb-4 inline mr-1 text-blue-600">
+      <h3 className="text-lg font-semibold inline mr-1 text-[#0369a1]">
         {title}
       </h3>
       <div className="space-y-3 max-h-[300px] overflow-auto">

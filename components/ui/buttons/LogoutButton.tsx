@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import CustomLoadingSpinner from "../loadings/CustomLoadingSpinner";
+import supabase from "@/libs/supabaseClient";
 
 export default function LogoutButton() {
-  const supabase = createClientComponentClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +31,7 @@ export default function LogoutButton() {
     <>
       <button
         onClick={handleLogout}
-        className={`bg-red-500 text-[#fff] hover:underline w-32 rounded-md cursor-pointer py-1.5 ${
+        className={`bg-red-500 text-[#fff] hover:underline w-full rounded-md cursor-pointer py-1.5 duration-200 ${
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={loading}

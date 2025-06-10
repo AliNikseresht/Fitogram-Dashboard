@@ -1,5 +1,6 @@
 import { SupabaseProfile } from "@/types/UserProfile";
 import StatCard from "./StatCard";
+
 interface UserBodyInfoProps {
   profile: SupabaseProfile;
 }

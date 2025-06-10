@@ -6,12 +6,12 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import InputField from "@/components/ui/Forms/InputField";
 import Image from "next/image";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import GradientSubmitButton from "@/components/ui/buttons/GradientSubmitButton";
 import {
   ProfileFormProps,
   UserProfileFormValues,
 } from "@/types/UserProfileForm";
+import supabase from "@/libs/supabaseClient";
 
 export default function ProfileForm({
   title,
@@ -21,7 +21,6 @@ export default function ProfileForm({
   staticValues = {},
   showAvatarPreview = false,
 }: ProfileFormProps) {
-  const supabase = createClientComponentClient();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
