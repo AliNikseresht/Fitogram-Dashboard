@@ -3,7 +3,6 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { menuItems } from "@/data/SidebarMenuItemsData";
-import LogoutButton from "@/components/ui/buttons/LogoutButton";
 
 interface SidebarMenuProps {
   pathname: string;
@@ -24,9 +23,9 @@ const SidebarMenu = ({ pathname, onLinkClick, role }: SidebarMenuProps) => (
             key={item.label}
             href={fullHref}
             className={clsx(
-              "flex items-center gap-3 p-2 rounded-lg text-sm transition hover:bg-[#e1f1fe]",
+              "flex items-center gap-3 p-2 rounded-lg text-sm transition hover:bg-gradient-to-br from-[#f9e8ffb5] to-[#e1f1feb5]",
               isActive
-                ? "bg-blue-100 text-[#0369a1] font-semibold"
+                ? "bg-gradient-to-br from-[#f9e8ff] to-[#e1f1fe] text-[#0369a1] shadow"
                 : "text-[#4b5563]"
             )}
             onClick={onLinkClick}
@@ -46,16 +45,6 @@ const SidebarMenu = ({ pathname, onLinkClick, role }: SidebarMenuProps) => (
         );
       })}
     </div>
-
-    <div className="bg-gradient-to-br from-[#f9e8ff] to-[#e1f1fe] p-4 rounded-md mt-4 text-sm w-full">
-      <p className="font-medium text-gray-800 mb-1">Need help?</p>
-      <p className="text-gray-600">Contact your personal coach anytime</p>
-      <button className="mt-3 w-full px-4 py-2 bg-white text-sm font-medium text-blue-600 rounded-md border border-blue-300 hover:bg-blue-50">
-        Contact Support
-      </button>
-    </div>
-
-    <LogoutButton />
   </div>
 );
 

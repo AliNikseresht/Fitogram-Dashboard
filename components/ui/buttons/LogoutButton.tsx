@@ -31,7 +31,7 @@ export default function LogoutButton() {
     <>
       <button
         onClick={handleLogout}
-        className={`bg-red-500 text-[#fff] hover:underline w-32 rounded-md cursor-pointer py-1.5 ${
+        className={`bg-red-500 text-[#fff] hover:underline w-full rounded-md cursor-pointer py-1.5 duration-200 ${
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={loading}
