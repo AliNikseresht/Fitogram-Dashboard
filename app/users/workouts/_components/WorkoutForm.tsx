@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { addWorkout } from "./services/WorkoutService";
 import InputField from "@/components/ui/Forms/InputField";
 import { toast } from "react-toastify";
+import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
 
 type FormData = {
   title: string;
@@ -134,9 +135,9 @@ export default function WorkoutForm({ userId, onAdded }: Props) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+        className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
       >
-        {isSubmitting ? "Adding..." : "Add Workout"}
+        {isSubmitting ? <CustomLoadingSpinner /> : "Add Workout"}
       </button>
     </form>
   );
