@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/layout/ClientLayout";
@@ -32,7 +32,6 @@ export const metadata: Metadata = {
   authors: [
     { name: "Ali Nikseresht", url: "https://fitogram-dashboard.vercel.app/" },
   ],
-  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: "/favicon.ico",
   },
@@ -64,6 +63,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://fitogram-dashboard.vercel.app"),
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -80,9 +84,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+        <ClientLayout>{children}</ClientLayout>
         <ToastContainer />
       </body>
     </html>

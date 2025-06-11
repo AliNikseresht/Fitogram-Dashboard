@@ -114,7 +114,7 @@ export default function CoachesPage() {
 
     fetchStudents();
     fetchRequests();
-  }, [supabase, fetchStudents]);
+  }, [fetchStudents]);
 
   return (
     <div className="p-6">
