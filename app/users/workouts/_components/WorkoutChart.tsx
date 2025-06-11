@@ -26,9 +26,9 @@ export default function WorkoutChart({ workouts }: Props) {
   }));
 
   return (
-    <div className="w-full h-[300px] lg:h-full bg-white rounded-xl shadow border border-[#bababa] p-4">
-      <h3 className="font-semibold mb-2">Calories Burned Over Time</h3>
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-[300px] lg:h-[400px] bg-white rounded-xl shadow border border-[#bababa] p-4">
+      <h3 className="font-semibold">Calories Burned Over Time</h3>
+      <ResponsiveContainer width="100%" height="100%" className={'py-5 -ml-5'}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />

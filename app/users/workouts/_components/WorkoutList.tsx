@@ -84,11 +84,11 @@ export default function WorkoutList({ workouts, onChange }: Props) {
     return <p className="text-gray-500">No workouts recorded yet.</p>;
 
   return (
-    <div className="space-y-3 h-full overflow-y-auto">
+    <div className="space-y-3 lg:h-[315px] overflow-y-auto border border-[#bababa] rounded-xl shadow p-3 bg-white">
       {workouts.map((w) => (
         <div
           key={w.id}
-          className="border border-[#bababa] rounded-xl shadow p-3 flex justify-between items-center bg-white"
+          className="border border-[#bababa] rounded-xl shadow p-2 flex justify-between items-center"
         >
           <div className="flex-1">
             {editingId === w.id ? (

@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import ContactUsSection from "./_components/ContactUsSection";
 
 const SupportPage = () => {
-  return (
-    <div>SupportPage</div>
-  )
-}
+  return <ContactUsSection />;
+};
 
-export default SupportPage
+export default SupportPage;

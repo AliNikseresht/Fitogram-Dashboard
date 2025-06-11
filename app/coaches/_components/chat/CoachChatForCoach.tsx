@@ -43,7 +43,7 @@ const CoachChatForCoach = () => {
       if (data && data.length > 0) setSelectedStudent(data[0]);
     }
     fetchStudents();
-  }, [userId, supabase]);
+  }, [userId]);
 
   if (!userId) return <CustomLoadingBars />;
 

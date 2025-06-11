@@ -52,8 +52,8 @@ export default async function NutritionPage() {
   );
 
   return (
-    <div className="p-4 space-y-6 w-full">
-      <h2 className="text-xl font-bold">Personalized Nutrition</h2>
+    <section className="p-4 w-full space-y-6">
+      <h2 className="text-2xl font-bold mb-4">Personalized Nutrition</h2>
 
       <LogsSection
         dailyLogs={lastThreeDailyLogs}
@@ -68,6 +68,6 @@ export default async function NutritionPage() {
           sleepLogs={sleepLogs || []}
         />
       </div>
-    </div>
+    </section>
   );
 }
