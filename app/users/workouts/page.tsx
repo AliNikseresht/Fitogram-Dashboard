@@ -37,10 +37,11 @@ export default async function WorkoutsPage() {
       </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <WorkoutForm userId={user.id} />
-        <WorkoutList workouts={workouts || []} />
+        <div className="flex flex-col gap-3">
+          <WorkoutList workouts={workouts || []} />
+          <WorkoutChart workouts={workouts || []} />
+        </div>
       </div>
-
-      <WorkoutChart workouts={workouts || []} />
     </section>
   );
 }

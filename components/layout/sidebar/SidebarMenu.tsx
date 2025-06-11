@@ -34,7 +34,7 @@ const SidebarMenu = ({ pathname, onLinkClick, role }: SidebarMenuProps) => (
               className={clsx(
                 "text-lg text-[#4b5563] transition",
                 isActive
-                  ? "bg-blue-100 text-[#0369a1] font-semibold"
+                  ? "text-[#0369a1] font-semibold"
                   : "text-[#4b5563]"
               )}
             >
