@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "react-toastify";
@@ -20,6 +21,7 @@ interface Props {
 
 export default function CoachSelectionClient({ initialCoaches }: Props) {
   const router = useRouter();
+  const [selectedCoachId, setSelectedCoachId] = useState<string | null>(null);
 
   const { mutate: handleChooseCoach, isPending } = useMutation({
     mutationFn: async (coachId: string) => {
@@ -50,8 +52,15 @@ export default function CoachSelectionClient({ initialCoaches }: Props) {
     },
     onError: () => {
       toast.error("Failed to send request.");
+      setSelectedCoachId(null); // اگر خطا داشت انتخاب رو ریست کن
     },
   });
+
+  const handleSelect = (coachId: string) => {
+    if (selectedCoachId) return; // اگه یکی قبلا انتخاب شده بود، هیچ کاری نکن
+    setSelectedCoachId(coachId);
+    handleChooseCoach(coachId);
+  };
 
   return (
     <div className="p-4 space-y-4 w-full">
@@ -60,7 +69,9 @@ export default function CoachSelectionClient({ initialCoaches }: Props) {
         {initialCoaches.map((coach) => (
           <div
             key={coach.id}
-            className="flex flex-col bg-white rounded-xl shadow p-4 gap-5 justify-between items-center"
+            className={`flex flex-col bg-white rounded-xl shadow p-4 gap-5 justify-between items-center ${
+              selectedCoachId === coach.id ? "border-2 border-blue-500" : ""
+            }`}
           >
             <div className="flex flex-col items-center gap-3">
               <Image
@@ -81,11 +92,15 @@ export default function CoachSelectionClient({ initialCoaches }: Props) {
               <p className="text-xs text-gray-600">{coach.bio}</p>
             </div>
             <button
-              onClick={() => handleChooseCoach(coach.id)}
-              className="bg-blue-500 text-white px-4 py-1 rounded cursor-pointer"
-              disabled={isPending}
+              onClick={() => handleSelect(coach.id)}
+              className="bg-blue-500 text-white px-4 py-1 rounded cursor-pointer disabled:bg-gray-400"
+              disabled={!!selectedCoachId} // وقتی یکی انتخاب شده، همه دکمه‌ها disable بشن
             >
-              {isPending ? "Processing..." : "Select"}
+              {selectedCoachId === coach.id
+                ? isPending
+                  ? "Processing..."
+                  : "Selected"
+                : "Select"}
             </button>
           </div>
         ))}
