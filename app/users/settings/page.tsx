@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import supabase from "@/libs/supabaseClient";
 import InputField from "@/components/ui/Forms/InputField";
 import CustomLoadingBars from "@/components/ui/loadings/CustomLoadingBars";
+import Image from "next/image";
 
 type FormValues = {
   full_name: string;
@@ -131,9 +132,12 @@ const SettingsPage = () => {
       <div className="w-full max-w-2xl p-4 bg-white rounded-xl shadow">
         {avatarUrl && (
           <div className="flex justify-center mb-4">
-            <img
+            <Image
               src={avatarUrl}
               alt="Avatar"
+              width={55}
+              height={55}
+              priority
               className="w-32 h-32 rounded-full object-cover"
             />
           </div>
