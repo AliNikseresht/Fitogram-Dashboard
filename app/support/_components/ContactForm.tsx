@@ -5,26 +5,8 @@ import { useForm } from "react-hook-form";
 import FormField from "./FormField";
 import { toast } from "react-toastify";
 import CustomLoadingSpinner from "@/components/ui/loadings/CustomLoadingSpinner";
-
-type ContactFormInputs = {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-};
-
-const validationRules = {
-  name: { required: "Name is required" },
-  email: {
-    required: "Email is required",
-    pattern: {
-      value: /^\S+@\S+$/i,
-      message: "Invalid email address",
-    },
-  },
-  subject: { required: "Subject is required" },
-  message: { required: "Message is required" },
-};
+import { ContactFormInputs } from "@/types/ContactFormType";
+import { validationRules } from "@/data/validationRulesData";
 
 const ContactForm: React.FC = () => {
   const {
