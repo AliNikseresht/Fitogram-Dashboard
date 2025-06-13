@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 interface DailyLog {
   log_date: string;
   weight: number;
@@ -15,4 +17,12 @@ interface SleepLog {
 export interface LogsSectionProps {
   dailyLogs: DailyLog[];
   sleepLogs: SleepLog[];
+}
+
+export interface LogsCardProps<T> {
+  title: ReactNode;
+  logs: T[];
+  bgColor?: string;
+  hoverColor?: string;
+  renderItem: (log: T) => ReactNode;
 }

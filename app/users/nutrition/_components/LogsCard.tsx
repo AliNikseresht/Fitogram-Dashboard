@@ -1,14 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
-
-interface LogsCardProps<T> {
-  title: ReactNode;
-  logs: T[];
-  bgColor?: string;
-  hoverColor?: string;
-  renderItem: (log: T) => ReactNode;
-}
+import { LogsCardProps } from "@/types/LogsSectionNutrition";
 
 export default function LogsCard<T>({
   title,
