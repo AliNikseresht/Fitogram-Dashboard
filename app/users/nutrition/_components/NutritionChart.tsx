@@ -1,5 +1,6 @@
 "use client";
 
+import { NutritionChartProps } from "@/types/NutritionChart";
 import React, { useMemo } from "react";
 import {
   PieChart,
@@ -11,17 +12,6 @@ import {
 } from "recharts";
 
 const COLORS = ["#8884d8", "#82ca9d"];
-
-interface NutritionChartProps {
-  dailyLogs: {
-    water_intake: number;
-    id: string | number;
-  }[];
-  sleepLogs: {
-    duration: number;
-    id: string | number;
-  }[];
-}
 
 export default function NutritionChart({
   dailyLogs,
