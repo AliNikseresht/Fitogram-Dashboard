@@ -2,26 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import CoachChatForCoach from "../_components/chat/CoachChatForCoach";
+import CoachChatForCoach from "./_components/chat/CoachChatForCoach";
+import Card from "./_components/Card";
 import supabase from "@/libs/supabaseClient";
-
-interface Profile {
-  full_name: string;
-}
-
-interface CoachRequest {
-  id: string;
-  created_at: string;
-  user_id: string;
-  profiles: Profile | null;
-}
-
-interface RawCoachRequest {
-  id: string;
-  created_at: string;
-  user_id: string;
-  profiles: Profile | Profile[] | null;
-}
+import {
+  CoachRequest,
+  Profile,
+  RawCoachRequest,
+} from "@/types/CoachDashboardPageType";
 
 export default function CoachesPage() {
   const [requests, setRequests] = useState<CoachRequest[]>([]);
@@ -121,6 +109,7 @@ export default function CoachesPage() {
       <h2 className="text-2xl font-bold mb-4">🏋️ Coach Dashboard</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CoachChatForCoach />
         <Card title="My Users">
           {students.length === 0 ? (
             <p>No students yet.</p>
@@ -134,7 +123,6 @@ export default function CoachesPage() {
             </ul>
           )}
         </Card>
-        <CoachChatForCoach />
 
         <Card title="Requests">
           {loading ? (
@@ -177,21 +165,6 @@ export default function CoachesPage() {
         <Card title="Create Plan">Form for creating diet or workout plans</Card>
         <Card title="Progress Report">User progress statistics</Card>
       </div>
-    </div>
-  );
-}
-
-function Card({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="bg-[#fff] p-4 rounded-xl shadow-md">
-      <h2 className="text-lg font-semibold mb-2">{title}</h2>
-      <div>{children}</div>
     </div>
   );
 }

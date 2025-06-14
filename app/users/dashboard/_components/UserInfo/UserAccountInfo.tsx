@@ -15,7 +15,7 @@ const UserAccountInfo = ({ profile, avatarUrl }: UserAccountInfoProps) => {
     : null;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-3">
+    <div className="flex flex-col lg:flex-row gap-3 lg:mb-2">
       <div className="w-36 h-36">
         {avatarUrl && (
           <Image
