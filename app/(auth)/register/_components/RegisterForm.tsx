@@ -64,7 +64,6 @@ const RegisterForm = () => {
         />
       ))}
 
-      {/* Role selection */}
       <div className="mb-6">
         <label className="block mb-1 text-xs lg:text-sm font-medium">
           Role
