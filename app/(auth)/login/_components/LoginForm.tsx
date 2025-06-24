@@ -111,7 +111,6 @@ const LoginForm = () => {
           disabled={loading}
         />
       ))}
-
       <GradientSubmitButton isLoading={loading}>
         <div className="flex items-center justify-center gap-0.5">
           Continue <FaCaretRight />
